@@ -10,6 +10,7 @@
     <color name="appBlue">#1565c0</color>
     <color name="appLightBlue">#5e92f3</color>
     <color name="appDarkBlue">#003c8f</color>
+    <color name="grey">#9e9e9e</color>
 
 
 </resources>

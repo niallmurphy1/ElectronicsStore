@@ -27,6 +27,14 @@ public class Item {
         this.stockLevel = stockLevel;
     }
 
+    public Item(String name, String manufacturer, double price, String category, String image){
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.price = price;
+        this.category = category;
+        this.image = image;
+    }
+
     public double getRating() {
         return rating;
     }
