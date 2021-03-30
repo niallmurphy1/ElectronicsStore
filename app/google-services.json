@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "395837665726",
+    "firebase_url": "https://electronics-store-53c44-default-rtdb.firebaseio.com",
+    "project_id": "electronics-store-53c44",
+    "storage_bucket": "electronics-store-53c44.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:395837665726:android:8845a96a69465b583b49ef",
+        "android_client_info": {
+          "package_name": "com.niall.electronicsstore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "395837665726-4qre830oub6dvu1ngufgar0f7g6a15d3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1L3w9Tie4TrEzyda9h5S2i3IvHrF4mZs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "395837665726-4qre830oub6dvu1ngufgar0f7g6a15d3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

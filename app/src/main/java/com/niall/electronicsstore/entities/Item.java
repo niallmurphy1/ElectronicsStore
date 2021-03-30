@@ -12,9 +12,10 @@ public class Item {
     private String category;
     private String image;
     private double rating;
-     private ArrayList<String> reviews;
+    private ArrayList<String> reviews;
+    private int stockLevel;
 
-    public Item(String id, String name, String manufacturer, double price, String category, String image, double rating, ArrayList<String> reviews) {
+    public Item(String id, String name, String manufacturer, double price, String category, String image, double rating, ArrayList<String> reviews, int stockLevel) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
@@ -23,7 +24,7 @@ public class Item {
         this.image = image;
         this.rating = rating;
         this.reviews = reviews;
-
+        this.stockLevel = stockLevel;
     }
 
     public double getRating() {
@@ -101,6 +102,7 @@ public class Item {
                 ", image='" + image + '\'' +
                 ", rating=" + rating +
                 ", reviews=" + reviews +
+                ", stockLevel=" + stockLevel +
                 '}';
     }
 }
