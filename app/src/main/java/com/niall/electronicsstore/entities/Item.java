@@ -1,25 +1,62 @@
 package com.niall.electronicsstore.entities;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Item {
 
     private String id;
     private String name;
     private String manufacturer;
-    private double price;
+    private int priceCents;
     private String category;
     private String image;
     private double rating;
     private ArrayList<String> reviews;
     private int stockLevel;
 
-    public Item(String id, String name, String manufacturer, double price, String category, String image, double rating, ArrayList<String> reviews, int stockLevel) {
+
+    public static Comparator<Item> itemComparatorAZName = new Comparator<Item>() {
+        @Override
+        public int compare(Item item1, Item item2) {
+            return item1.getName().compareTo(item2.getName());
+        }
+    };
+
+    public static Comparator<Item> itemComparatorZAName = new Comparator<Item>() {
+        @Override
+        public int compare(Item item1, Item item2) {
+            return item2.getName().compareTo(item1.getName());
+        }
+    };
+
+    public static Comparator<Item> itemComparatorPriceLowHigh = new Comparator<Item>() {
+        @Override
+        public int compare(Item item1, Item item2) {
+            return (int) (item1.getPriceCents() - item2.getPriceCents());
+        }
+    };
+
+    public static Comparator<Item> itemComparatorPriceHighLow = new Comparator<Item>() {
+        @Override
+        public int compare(Item item1, Item item2) {
+            return (int) (item2.getPriceCents() - item1.getPriceCents());
+        }
+    };
+
+
+      public static Comparator<Item> itemComparatorManufacturer = new Comparator<Item>() {
+          @Override
+          public int compare(Item item1, Item item2) {
+              return item1.getManufacturer().compareTo(item2.getManufacturer());
+          }
+      };
+
+      public Item(String id, String name, String manufacturer, int priceCents, String category, String image, double rating, ArrayList<String> reviews, int stockLevel) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
-        this.price = price;
+        this.priceCents = priceCents;
         this.category = category;
         this.image = image;
         this.rating = rating;
@@ -27,13 +64,15 @@ public class Item {
         this.stockLevel = stockLevel;
     }
 
-    public Item(String name, String manufacturer, double price, String category, String image){
+    public Item(String name, String manufacturer, int priceCents, String category, String image){
         this.name = name;
         this.manufacturer = manufacturer;
-        this.price = price;
+        this.priceCents = priceCents;
         this.category = category;
         this.image = image;
     }
+
+
 
     public double getRating() {
         return rating;
@@ -75,12 +114,12 @@ public class Item {
         this.manufacturer = manufacturer;
     }
 
-    public double getPrice() {
-        return price;
+    public int getPriceCents() {
+        return priceCents;
     }
 
-    public void setPrice(double price) {
-        this.price = price;
+    public void setPriceCents(int priceCents) {
+        this.priceCents = priceCents;
     }
 
     public String getCategory() {
@@ -105,7 +144,7 @@ public class Item {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
-                ", price=" + price +
+                ", price=" + priceCents +
                 ", category='" + category + '\'' +
                 ", image='" + image + '\'' +
                 ", rating=" + rating +

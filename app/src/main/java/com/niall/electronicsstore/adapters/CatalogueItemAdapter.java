@@ -1,14 +1,10 @@
 package com.niall.electronicsstore.adapters;
 
 import android.content.Context;
-import android.graphics.Movie;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,13 +14,17 @@ import com.niall.electronicsstore.R;
 import com.niall.electronicsstore.entities.Item;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
+import org.w3c.dom.Text;
 
-public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdapter.ViewHolder> implements Filterable {
+import java.text.NumberFormat;
+import java.util.ArrayList;
+import java.util.Locale;
+
+public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdapter.ViewHolder>{
 
     private LayoutInflater layoutInflater;
     private ArrayList<Item> items = new ArrayList<>();
-    private ArrayList<Item> filteredItems = new ArrayList<>();
+   // private ArrayList<Item> filteredItems = new ArrayList<>();
     private ViewHolder.OnItemListener onItemListener;
 
 
@@ -34,10 +34,7 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
 
     }
 
-    @Override
-    public Filter getFilter() {
-        return null;
-    }
+
 
     @NonNull
     @Override
@@ -55,7 +52,7 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
 
     @Override
     public int getItemCount() {
-        return filteredItems.size();
+        return items.size();
     }
 
 
@@ -65,6 +62,7 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
         public TextView titleText;
         public TextView manufacturerText;
         public TextView priceText;
+        public TextView categoryText;
 
         OnItemListener onItemListener;
         public ViewHolder(@NonNull View itemView, OnItemListener onItemListener) {
@@ -73,6 +71,7 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
             titleText = itemView.findViewById(R.id.item_title_text);
             manufacturerText = itemView.findViewById(R.id.manufacturer_text_view);
             priceText = itemView.findViewById(R.id.price_text_view);
+            categoryText = itemView.findViewById(R.id.category_text_view);
             this.onItemListener = onItemListener;
         }
 
@@ -83,9 +82,17 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
                     .fit()
                     .centerCrop()
                     .into(itemImage);
-            priceText.setText("€" +String.valueOf(item.getPrice()));
+            double price = (item.getPriceCents()/100.00);
+            priceText.setText(formatPriceEuro(price));
             manufacturerText.setText(item.getManufacturer());
+            categoryText.setText(item.getCategory());
             titleText.setText(item.getName());
+
+        }
+
+        public String formatPriceEuro(double price){
+            NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+            return formatter.format(price);
 
         }
 
@@ -104,11 +111,13 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
         this.items = items;
     }
 
-    public void setFilteredItems(ArrayList<Item> filteredItems) {
-        this.filteredItems = filteredItems;
-    }
+
 
     public void setOnItemListener(ViewHolder.OnItemListener onItemListener) {
         this.onItemListener = onItemListener;
+    }
+
+    public void addItems(ArrayList<Item> theItems){
+        this.items = theItems;
     }
 }

@@ -40,6 +40,13 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         mainAuth = FirebaseAuth.getInstance();
+
+        if (mainAuth.getCurrentUser() != null) {
+            startActivity(new Intent(this, BottomNavActivity.class));
+            return;
+        }
+
+
         emailEdit = findViewById(R.id.emailEditText);
         passwordEdit = findViewById(R.id.passwordEditText);
         adminCodeText = findViewById(R.id.adminTextField);

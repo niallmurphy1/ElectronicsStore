@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/sort_by_name_AZ"
+        android:title="Sort A->Z"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_name_ZA"
+        android:title="sort Z->A"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_price_high_low"
+        android:title="Price: High->Low"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/sort_by_price_low_high"
+        android:title="Price: Low->High"
+        app:showAsAction="never" />
+
+</menu>
