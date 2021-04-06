@@ -1,5 +1,6 @@
 package com.niall.electronicsstore.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,7 +18,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.niall.electronicsstore.R;
+import com.niall.electronicsstore.activities.RegisterActivity;
 import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
 
@@ -33,10 +36,15 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private ArrayList<Item> items = new ArrayList<>();
 
 
+    public FirebaseAuth firebaseAuth;
+
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        firebaseAuth = FirebaseAuth.getInstance();
         setHasOptionsMenu(true);
 
     }
@@ -87,6 +95,13 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 Toast.makeText(getContext(), "Sort Price: High->Low", Toast.LENGTH_SHORT).show();
                 return true;
 
+
+            case R.id.log_out:
+                if (firebaseAuth.getCurrentUser() != null) {
+                    firebaseAuth.signOut();
+                    startActivity(new Intent(getContext(), RegisterActivity.class));
+                }
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

@@ -9,9 +9,12 @@
         android:roundIcon="@drawable/cpu_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.ElectronicsStore">
+        <activity android:name=".activities.RegisterAdminActivity"></activity>
+        <activity android:name=".activities.RegisterUserActivity" />
+        <activity android:name=".activities.RegisterActivity" />
         <activity android:name=".activities.BottomNavActivity" />
         <activity android:name=".activities.LoginActivity" />
-        <activity android:name=".activities.RegisterActivity">
+        <activity android:name=".activities.RegLogActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

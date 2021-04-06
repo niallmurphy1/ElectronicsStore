@@ -2,38 +2,51 @@ package com.niall.electronicsstore.entities;
 
 public class Address {
 
-    private String firstName;
-    private String lastName;
+
     private String addressLine1;
     private String addressLine2;
     private String zipCode;
     private String city;
     private String country;
 
-    public Address(String firstName, String lastName, String addressLine1, String addressLine2, String zipCode, String city, String country) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.addressLine1 = addressLine1;
-        this.addressLine2 = addressLine2;
-        this.zipCode = zipCode;
-        this.city = city;
-        this.country = country;
+    public Address(){
+
     }
 
-    public String getFirstName() {
-        return firstName;
+    private Address(AddressBuilder addressBuilder){
+        this.addressLine1 = addressBuilder.addressLine1;
+        this.addressLine2 = addressBuilder.addressLine2;
+        this.zipCode = addressBuilder.zipCode;
+        this.city = addressBuilder.city;
+        this.country = addressBuilder.country;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public static class AddressBuilder{
 
-    public String getLastName() {
-        return lastName;
-    }
+        private String addressLine1;
+        private String addressLine2;
+        private String zipCode;
+        private String city;
+        private String country;
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+        public AddressBuilder(String addressLine1, String addressLine2, String zipCode, String city, String country) {
+            this.addressLine1 = addressLine1;
+            this.addressLine2 = addressLine2;
+            this.zipCode = zipCode;
+            this.city = city;
+            this.country = country;
+        }
+
+        private boolean isValidData(){
+
+            return true;
+        }
+
+        public Address build(){
+            isValidData();
+            return new Address(this);
+        }
+
     }
 
     public String getAddressLine1() {
@@ -79,8 +92,6 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
                 ", addressLine1='" + addressLine1 + '\'' +
                 ", addressLine2='" + addressLine2 + '\'' +
                 ", zipCode='" + zipCode + '\'' +

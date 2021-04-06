@@ -19,45 +19,74 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.niall.electronicsstore.R;
-import com.niall.electronicsstore.entities.AdminDetails;
+import com.niall.electronicsstore.entities.Address;
 import com.niall.electronicsstore.entities.Name;
+import com.niall.electronicsstore.entities.PaymentMethod;
 import com.niall.electronicsstore.entities.User;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.niall.electronicsstore.util.Constants.adminCodes;
+public class RegisterUserActivity extends AppCompatActivity {
 
-public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mainAuth;
-    private EditText emailEdit;
-    private EditText passwordEdit;
-    private EditText adminCodeText;
-    private boolean admin;
-
     private Intent dashIntent;
 
+
+    private Name name;
+    private Address address;
+    private PaymentMethod paymentMethod;
+
+    //User details
+    private EditText firstNameEdit;
+    private EditText lastNameEdit;
+    private EditText emailEdit;
+    private EditText passwordEdit;
+
+    //User address details
+    private EditText addressLine1Edit;
+    private EditText addressLine2Edit;
+    private EditText zipEdit;
+    private EditText cityEdit;
+    private EditText countryEdit;
+
+    //User Payment details
+    private EditText nameOnCardEdit;
+    private EditText cardNumberEdit;
+    private EditText securityCodeEdit;
+    private EditText expirationMonthEdit;
+    private EditText expirationYearEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_register_user);
+
 
         mainAuth = FirebaseAuth.getInstance();
 
-        if (mainAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, BottomNavActivity.class));
-            return;
-        }
         dashIntent = new Intent(this, BottomNavActivity.class);
 
 
-        emailEdit = findViewById(R.id.emailEditText);
-        passwordEdit = findViewById(R.id.passwordEditText);
-        adminCodeText = findViewById(R.id.adminTextField);
+        //initialise variables
+        firstNameEdit = findViewById(R.id.firstNameText);
+        lastNameEdit = findViewById(R.id.lastNameEditText);
+        emailEdit = findViewById(R.id.emailEditTextRegisterUser);
+        passwordEdit = findViewById(R.id.passwordEditTextRegisterUser);
+
+        addressLine1Edit = findViewById(R.id.addressLine1EditText);
+        addressLine2Edit = findViewById(R.id.addressLine2EditText);
+        zipEdit = findViewById(R.id.zipCodeEditText);
+        cityEdit = findViewById(R.id.cityEditText);
+        countryEdit = findViewById(R.id.countryEditText);
+
+        nameOnCardEdit = findViewById(R.id.nameOnCardText);
+        cardNumberEdit = findViewById(R.id.cardNumberEditText);
+        securityCodeEdit = findViewById(R.id.securityCodeEditText);
+        expirationMonthEdit = findViewById(R.id.oder_details_expiration_month_text);
+        expirationYearEdit = findViewById(R.id.oder_details_expiration_year_text);
+
     }
-
-
 
     @NotNull
     private String getPasswordInput() {
@@ -69,20 +98,9 @@ public class RegisterActivity extends AppCompatActivity {
         return emailEdit.getText().toString();
     }
 
-    public void onRegisterClick(View view){
-
-        admin = false;
-        if(!adminCodeText.getText().toString().equals("")){
-
-            for(int i = 0; i < adminCodes.length; i++){
-
-                if(adminCodeText.getText().toString().equals(adminCodes[i])){
-                     admin = true;
-                }
-            }
+    public void onRegisterClick(View view) {
 
 
-        }
         mainAuth.createUserWithEmailAndPassword(getEmailInput(), getPasswordInput())
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -90,7 +108,7 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d("TAG", "createUserWithEmail:success");
-                            Toast.makeText(RegisterActivity.this, "Registration successful.",
+                            Toast.makeText(RegisterUserActivity.this, "Registration successful.",
                                     Toast.LENGTH_SHORT).show();
                             FirebaseUser user = mainAuth.getCurrentUser();
                             String userId = user.getUid();
@@ -101,11 +119,16 @@ public class RegisterActivity extends AppCompatActivity {
                             User aUser;
 
                             aUser = new User.UserBuilder(emailEdit.getText().toString(), newName)
-                                        .adminDetails(new AdminDetails.AdminBuilder("1234567890", "Sales Associate")
-                                                .build())
-                                        .build();
-
-
+                                    .address(new Address.AddressBuilder(addressLine1Edit.getText().toString()
+                                            , addressLine2Edit.getText().toString()
+                                            , zipEdit.getText().toString()
+                                            , cityEdit.getText().toString()
+                                            , countryEdit.getText().toString())
+                                            .build()).paymentMethod(new PaymentMethod.PaymentMethodBuilder(nameOnCardEdit.getText().toString()
+                                            , cardNumberEdit.getText().toString()
+                                            , securityCodeEdit.getText().toString()
+                                            , Integer.parseInt(expirationMonthEdit.getText().toString())
+                                            , Integer.parseInt(expirationYearEdit.getText().toString())).build()).build();
 
 
                             String name = user.getDisplayName();
@@ -116,7 +139,7 @@ public class RegisterActivity extends AppCompatActivity {
                             db.child("User").child(userId).setValue(aUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(RegisterActivity.this, "Write successful", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(RegisterUserActivity.this, "Write successful", Toast.LENGTH_LONG).show();
 
                                     //startDashboard Activity
 
@@ -125,12 +148,10 @@ public class RegisterActivity extends AppCompatActivity {
                             });
 
 
-
-
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w("TAG", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterActivity.this, "Register failed.",
+                            Toast.makeText(RegisterUserActivity.this, "Register failed.",
                                     Toast.LENGTH_SHORT).show();
                         }
 
@@ -138,8 +159,4 @@ public class RegisterActivity extends AppCompatActivity {
                     }
                 });
     }
-
-//    public void onLoginClick(View view){
-//        startActivity(new Intent(this, LoginActivity.class));
-//    }
 }

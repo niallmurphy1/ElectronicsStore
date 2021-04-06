@@ -5,23 +5,35 @@
 
     <item
         android:id="@+id/sort_by_name_AZ"
-        android:title="Sort A->Z"
+        android:title="@string/sort_a_z"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/sort_by_name_ZA"
-        android:title="sort Z->A"
+        android:title="@string/sort_z_a"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/sort_by_price_high_low"
-        android:title="Price: High->Low"
+        android:title="@string/price_high_low"
         app:showAsAction="never" />
 
 
     <item
         android:id="@+id/sort_by_price_low_high"
-        android:title="Price: Low->High"
+        android:title="@string/price_low_high"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/sort_by_manufacturer"
+        android:title="@string/sort_by_manufacturer"
+        app:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/log_out"
+        android:title="@string/log_out"
+        app:showAsAction="never" />
+
 
 </menu>
