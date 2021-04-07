@@ -95,7 +95,7 @@ public class RegisterActivity extends AppCompatActivity {
                             FirebaseUser user = mainAuth.getCurrentUser();
                             String userId = user.getUid();
 
-                            Name newName = new Name.NameBuilder().firstName("Niall").lastName("Murphy").build();
+                            Name newName = new Name.NameBuilder("Niall", "Murphy").build();
 
 
                             User aUser;

@@ -14,4 +14,10 @@
     <string name="price_low_high"><![CDATA[Price: Low->High]]></string>
     <string name="sort_by_manufacturer">Sort By Manufacturer</string>
     <string name="log_out">Log out</string>
+    <string name="admin_details">Admin details</string>
+    <string name="personal_admin_code">Personal Admin Code</string>
+    <string name="employee_id">Employee ID</string>
+    <string name="job_title">Job title</string>
+    <string name="register">Register</string>
+    <string name="search_by_name">search by name...</string>
 </resources>

@@ -46,39 +46,39 @@
             android:layout_gravity="center_horizontal"
             android:background="@color/appBlue"
             android:text="Register (User)"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:onClick="onRegisterUserClick"/>
 
 
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Enter the admin access code to register as a new admin"
-            android:textAlignment="center"
-            android:textStyle="bold"
-            android:layout_marginBottom="15dp"
-            android:textColor="@color/black"
-            android:layout_marginTop="12dp"
-            />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_gravity="center_horizontal"-->
+<!--            android:text="Enter the admin access code to register as a new admin"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textStyle="bold"-->
+<!--            android:layout_marginBottom="15dp"-->
+<!--            android:textColor="@color/black"-->
+<!--            android:layout_marginTop="12dp"-->
+<!--            />-->
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:hint="6 digit Admin passcode"
-            app:passwordToggleEnabled="true"
-            android:background="@drawable/round_corner_toggle"
-            app:errorEnabled="true">
+<!--        <com.google.android.material.textfield.TextInputLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="54dp"-->
+<!--            android:hint="6 digit Admin passcode"-->
+<!--            app:passwordToggleEnabled="true"-->
+<!--            android:background="@drawable/round_corner_toggle"-->
+<!--            app:errorEnabled="true">-->
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/adminCodeTextField"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_corner_toggle"
-                android:inputType="numberPassword"/>
-        </com.google.android.material.textfield.TextInputLayout>
+<!--            <com.google.android.material.textfield.TextInputEditText-->
+<!--                android:id="@+id/adminCodeTextField"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:background="@drawable/round_corner_toggle"-->
+<!--                android:inputType="numberPassword"/>-->
+<!--        </com.google.android.material.textfield.TextInputLayout>-->
 
         <Button
             android:id="@+id/registerAdminButton"
@@ -87,7 +87,7 @@
             android:layout_marginTop="15dp"
             android:layout_gravity="center_horizontal"
             android:background="@color/appBlue"
-            android:text="Register (Admin)"
+            android:text="Register (UserAdmin)"
             android:onClick="onRegisterAdminClick"/>
 
 
@@ -99,7 +99,7 @@
             android:text="Already a member?"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="25dp"
             />
 
         <Button

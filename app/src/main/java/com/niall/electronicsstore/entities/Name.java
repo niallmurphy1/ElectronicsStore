@@ -18,6 +18,10 @@ public class Name {
         private String firstName;
         private String lastName;
 
+        public NameBuilder(String firstName, String lastName){
+            this.firstName = firstName;
+            this.lastName = lastName;
+        }
 
         public NameBuilder firstName(final String firstName) {
             this.firstName = firstName;

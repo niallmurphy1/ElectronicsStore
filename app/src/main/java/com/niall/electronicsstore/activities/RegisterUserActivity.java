@@ -33,10 +33,6 @@ public class RegisterUserActivity extends AppCompatActivity {
     private Intent dashIntent;
 
 
-    private Name name;
-    private Address address;
-    private PaymentMethod paymentMethod;
-
     //User details
     private EditText firstNameEdit;
     private EditText lastNameEdit;
@@ -113,12 +109,13 @@ public class RegisterUserActivity extends AppCompatActivity {
                             FirebaseUser user = mainAuth.getCurrentUser();
                             String userId = user.getUid();
 
-                            Name newName = new Name.NameBuilder().firstName("Niall").lastName("Murphy").build();
+                            Name newName = new Name.NameBuilder(firstNameEdit.getText().toString()
+                                    , lastNameEdit.getText().toString())
+                                    .build();
 
 
-                            User aUser;
 
-                            aUser = new User.UserBuilder(emailEdit.getText().toString(), newName)
+                            User aUser = new User.UserBuilder(emailEdit.getText().toString(), newName)
                                     .address(new Address.AddressBuilder(addressLine1Edit.getText().toString()
                                             , addressLine2Edit.getText().toString()
                                             , zipEdit.getText().toString()

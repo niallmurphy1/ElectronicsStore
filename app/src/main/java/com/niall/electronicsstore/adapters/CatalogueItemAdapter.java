@@ -1,9 +1,12 @@
 package com.niall.electronicsstore.adapters;
 
 import android.content.Context;
+import android.graphics.Movie;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,11 +23,11 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdapter.ViewHolder>{
+public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdapter.ViewHolder> implements Filterable {
 
     private LayoutInflater layoutInflater;
     private ArrayList<Item> items = new ArrayList<>();
-   // private ArrayList<Item> filteredItems = new ArrayList<>();
+    private ArrayList<Item> filteredItems = new ArrayList<>();
     private ViewHolder.OnItemListener onItemListener;
 
 
@@ -47,16 +50,57 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
-        holder.setData(items.get(position));
+        holder.setData(filteredItems.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return filteredItems.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+
+        return new Filter(){
+
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+
+
+                ArrayList<Item> filteredItems = new ArrayList<>();
+
+                for(Item item : items){
+                    if(item.getName().toLowerCase().contains(constraint.toString().toLowerCase())){
+                        filteredItems.add(item);
+                    }
+                }
+                FilterResults filterResults = new FilterResults();
+
+                if(constraint.toString().equals("")){
+                    filteredItems.addAll(items);
+                    filterResults.values = items;
+                    filterResults.count = items.size();
+
+                }
+                else{
+                    filterResults.values= filteredItems;
+                    filterResults.count= filteredItems.size();
+                }
+
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+
+                CatalogueItemAdapter.this.filteredItems = (ArrayList<Item>) results.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    public static class ViewHolder extends RecyclerView.ViewHolder{
 
         public ImageView itemImage;
         public TextView titleText;
@@ -75,6 +119,8 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
             this.onItemListener = onItemListener;
         }
 
+
+
         public void setData(Item item) {
 
             Picasso.get()
@@ -88,6 +134,13 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
             categoryText.setText(item.getCategory());
             titleText.setText(item.getName());
 
+           itemView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View v) {
+                   onItemListener.onItemClick(item);
+               }
+           });
+
         }
 
         public String formatPriceEuro(double price){
@@ -96,14 +149,11 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
 
         }
 
-        @Override
-        public void onClick(View v) {
-            onItemListener.onItemClick(getAdapterPosition());
-        }
+
 
         public interface OnItemListener{
 
-            public void onItemClick(int position);
+            public void onItemClick(Item item);
         }
     }
 
@@ -118,6 +168,7 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
     }
 
     public void addItems(ArrayList<Item> theItems){
+        filteredItems = theItems;
         this.items = theItems;
     }
 }

@@ -45,7 +45,7 @@ public class Item {
     };
 
 
-      public static Comparator<Item> itemComparatorManufacturer = new Comparator<Item>() {
+    public static Comparator<Item> itemComparatorManufacturer = new Comparator<Item>() {
           @Override
           public int compare(Item item1, Item item2) {
               return item1.getManufacturer().compareTo(item2.getManufacturer());
@@ -136,6 +136,14 @@ public class Item {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public int getStockLevel() {
+        return stockLevel;
+    }
+
+    public void setStockLevel(int stockLevel) {
+        this.stockLevel = stockLevel;
     }
 
     @Override
