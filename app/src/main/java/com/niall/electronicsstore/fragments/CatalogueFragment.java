@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,20 +19,32 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.firebase.auth.FirebaseAuth;
 import com.niall.electronicsstore.R;
 import com.niall.electronicsstore.activities.RegLogActivity;
 import com.niall.electronicsstore.activities.RegisterActivity;
 import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
+import com.niall.electronicsstore.interpreter.Expression;
+import com.squareup.picasso.Picasso;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 
 public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.ViewHolder.OnItemListener {
 
@@ -41,10 +54,30 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private CatalogueItemAdapter adapter;
     private ArrayList<Item> items = new ArrayList<>();
 
+
+    //bottom sheet components
+    private LinearLayout headerLayout;
+    private ConstraintLayout bottomSheetConstraint;
+    private ImageView headerArrowImage;
+    private BottomSheetBehavior bottomSheetBehavior;
+    private Button addToCartButton;
+    private Button changeCurrencyBtn;
+    private ImageView itemImage;
+    private TextView titleText;
+    private TextView descriptionText;
+    private TextView manufacturerText;
+    private TextView categoryText;
+    private TextView priceText;
+
+    private Class tempClass = Class.forName("Euro");
+
     private EditText searchBarEdit;
 
 
     public FirebaseAuth firebaseAuth;
+
+    public CatalogueFragment() throws ClassNotFoundException {
+    }
 
 
     @Override
@@ -131,14 +164,163 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         setUpRCV();
 
 
-
         adapter.addItems(items);
         adapter.notifyDataSetChanged();
 
 
         setUpFilter();
 
+        addToCartButton = view.findViewById(R.id.add_to_cart_button);
+        changeCurrencyBtn = view.findViewById(R.id.bap_change_currency_button);
 
+        itemImage = view.findViewById(R.id.bap_sheet_item_image);
+        titleText = view.findViewById(R.id.bap_sheet_title_text);
+        descriptionText = view.findViewById(R.id.bap_sheet_description_text);
+        categoryText = view.findViewById(R.id.bap_sheet_category_text);
+        manufacturerText = view.findViewById(R.id.bap_sheet_manufacturer_text);
+        priceText = view.findViewById(R.id.bap_sheet_price_text);
+
+
+        addToCartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                //TODO: add items to firebase
+                addToUserCartFirebase();
+            }
+        });
+
+
+        //set up bottom sheet
+        bottomSheetConstraint = view.findViewById(R.id.bottom_sheet_item_view);
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetConstraint);
+        headerLayout = view.findViewById(R.id.header_layout_item_view);
+        headerArrowImage = view.findViewById(R.id.bap_sheet_arrow);
+
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                headerArrowImage.setRotation(180 * slideOffset);
+            }
+        });
+
+
+        headerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            }
+        });
+
+    }
+
+    private void convertCurrency(Item item) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, java.lang.InstantiationException {
+
+
+        //Class tempClass = Class.forName("Euro");
+
+        Constructor con = tempClass.getConstructor();
+
+        Object converFrom = (Expression) con.newInstance();
+
+        Class[] methodParams = new Class[]{Double.TYPE};
+
+        Method conversionMethod = tempClass.getMethod("Pound", methodParams);
+
+        Object[] params = new Object[]{(double) item.getPriceCents()};
+
+        String toQuantity = (String) conversionMethod.invoke(converFrom, params);
+
+        String conversionResult = toQuantity;
+
+        double priceCents = Double.valueOf(conversionResult);
+
+        double priceWhole = (priceCents / 100.00);
+
+        String newPrice = formatPriceEuro(priceWhole);
+
+        priceText.setText(newPrice + " pounds");
+
+
+
+
+
+    }
+
+
+    @Override
+    public void onItemClick(Item item) {
+
+        Log.d(TAG, "onItemClick: You clicked " + item.toString());
+
+        if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        } else {
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+
+
+        Picasso.get()
+                .load(item.getImage())
+                .fit()
+                .centerCrop()
+                .into(itemImage);
+
+        titleText.setText(item.getName());
+
+        categoryText.setText(item.getCategory());
+
+        manufacturerText.setText(item.getManufacturer());
+
+        double price = (item.getPriceCents() / 100.00);
+
+        priceText.setText(formatPriceEuro(price));
+
+        //TODO: description for this
+
+//        if(!item.getDescription().equals(null)) {
+//            descriptionText.setText(item.getDescription());
+//        }else{
+//            descriptionText.setText("This is a cool product");
+//        }
+
+        changeCurrencyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                try {
+                    convertCurrency(item);
+                } catch (ClassNotFoundException
+                        | NoSuchMethodException
+                        | IllegalAccessException
+                        | InvocationTargetException
+                        | java.lang.InstantiationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+    }
+
+    public String formatPriceEuro(double price) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+        return formatter.format(price);
+
+    }
+
+    private void addToUserCartFirebase() {
     }
 
 
@@ -202,13 +384,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     }
 
 
-    @Override
-    public void onItemClick(Item item) {
-
-        Log.d(TAG, "onItemClick: You clicked " + item.toString());
-    }
-
-   public void setUpFilter(){
+    public void setUpFilter() {
 
 
         searchBarEdit.addTextChangedListener(new TextWatcher() {
@@ -229,7 +405,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             }
         });
     }
-
 
 
 }

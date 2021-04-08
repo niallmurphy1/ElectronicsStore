@@ -14,6 +14,7 @@ public class Item {
     private double rating;
     private ArrayList<String> reviews;
     private int stockLevel;
+    private String description;
 
 
     public static Comparator<Item> itemComparatorAZName = new Comparator<Item>() {
@@ -52,7 +53,7 @@ public class Item {
           }
       };
 
-      public Item(String id, String name, String manufacturer, int priceCents, String category, String image, double rating, ArrayList<String> reviews, int stockLevel) {
+      public Item(String id, String name, String manufacturer, int priceCents, String category, String image, double rating, ArrayList<String> reviews, int stockLevel, String description) {
         this.id = id;
         this.name = name;
         this.manufacturer = manufacturer;
@@ -62,6 +63,7 @@ public class Item {
         this.rating = rating;
         this.reviews = reviews;
         this.stockLevel = stockLevel;
+        this.description = description;
     }
 
     public Item(String name, String manufacturer, int priceCents, String category, String image){
@@ -144,6 +146,14 @@ public class Item {
 
     public void setStockLevel(int stockLevel) {
         this.stockLevel = stockLevel;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

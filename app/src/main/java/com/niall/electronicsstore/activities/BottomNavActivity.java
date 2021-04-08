@@ -37,7 +37,11 @@ public class BottomNavActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            setInitialFrag();
+            try {
+                setInitialFrag();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         BottomNavigationView bNV = findViewById(R.id.bottom_nav_view);
@@ -61,7 +65,13 @@ public class BottomNavActivity extends AppCompatActivity {
                         return true;
 
                     case R.id.catalogue_nav:
-                        if (frag == null) frag = new CatalogueFragment();
+                        if (frag == null) {
+                            try {
+                                frag = new CatalogueFragment();
+                            } catch (ClassNotFoundException e) {
+                                e.printStackTrace();
+                            }
+                        }
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.container, frag)
@@ -89,7 +99,7 @@ public class BottomNavActivity extends AppCompatActivity {
 
     }
 
-    private void setInitialFrag() {
+    private void setInitialFrag() throws ClassNotFoundException {
 
         Fragment frag = new CatalogueFragment();
         getSupportFragmentManager()
