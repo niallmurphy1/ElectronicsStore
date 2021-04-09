@@ -40,6 +40,7 @@ import com.niall.electronicsstore.entities.Item;
 import com.niall.electronicsstore.interpreter.Euro;
 import com.niall.electronicsstore.interpreter.Expression;
 import com.niall.electronicsstore.interpreter.Pounds;
+import com.niall.electronicsstore.util.ExpressionUtil;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Constructor;
@@ -74,6 +75,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private TextView manufacturerText;
     private TextView categoryText;
     private TextView priceText;
+
+    private int previousChecked;
 
     private RadioGroup currencyRadioGroup;
 
@@ -204,7 +207,9 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         currencyRadioGroup = view.findViewById(R.id.bap_currency_radio_group);
         RadioButton euroRadio = view.findViewById(R.id.radio_euro);
 
-        euroRadio.setSelected(true);
+        //euroRadio.setSelected(true);
+
+        previousChecked = currencyRadioGroup.getCheckedRadioButtonId();
 
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -236,8 +241,37 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
     }
 
-    private void convertCurrency(Item item, String from, String to){
+    private void convertCurrency(Item item, int idFrom, String to){
 
+
+        //TODO fix this currency malarkey, very confusing
+       switch(to){
+
+           case "Euro":
+
+               double priceCents = Double.parseDouble(converter.euros(item.getPriceCents()));
+
+               double priceWhole = (priceCents / 100.00);
+
+               //put a switch here for type of price
+               String newPrice = formatPriceEuro(priceWhole);
+
+               priceText.setText(newPrice);
+
+               converter = ExpressionUtil.forCode(to);
+
+               idFrom = previousChecked;
+
+
+
+               break;
+
+           case "Pound":
+
+
+
+
+       }
 
         double priceCents = Double.parseDouble(converter.pounds(item.getPriceCents()));
 
@@ -248,8 +282,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
         priceText.setText(newPrice);
 
+        converter = ExpressionUtil.forCode(to);
 
-        converter = new Pounds();
 
 
     }
@@ -291,23 +325,23 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 //            descriptionText.setText("This is a cool product");
 //        }
 
+
+
         currencyRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
+
 
 
                 switch(checkedId){
 
                     case(R.id.radio_euro):
 
-                        convertCurrency(item, "someCurrency", "Euro");
+                        convertCurrency(item, previousChecked, "Euro");
 
                 }
             }
         });
-
-
-
 
 
     }
