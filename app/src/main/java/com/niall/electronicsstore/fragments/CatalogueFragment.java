@@ -35,6 +35,7 @@ import com.niall.electronicsstore.activities.RegLogActivity;
 import com.niall.electronicsstore.activities.RegisterActivity;
 import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
+import com.niall.electronicsstore.interpreter.Euro;
 import com.niall.electronicsstore.interpreter.Expression;
 import com.squareup.picasso.Picasso;
 
@@ -46,8 +47,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
 
+
+
 public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.ViewHolder.OnItemListener {
 
+
+    private Euro euro;
 
     private static final String TAG = "CatalogueTAG";
     private RecyclerView recyclerView;
@@ -69,7 +74,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private TextView categoryText;
     private TextView priceText;
 
-    private Class tempClass = Class.forName("Euro");
+    private Class tempClass = Class.forName("Euro.java");
 
     private EditText searchBarEdit;
 
@@ -225,35 +230,44 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
     }
 
-    private void convertCurrency(Item item) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, java.lang.InstantiationException {
+    private void convertCurrency(Item item){
 
 
         //Class tempClass = Class.forName("Euro");
 
-        Constructor con = tempClass.getConstructor();
+        Constructor con = null;
+        try {
+            con = tempClass.getConstructor();
 
-        Object converFrom = (Expression) con.newInstance();
+            Object converFrom = (Expression) con.newInstance();
 
-        Class[] methodParams = new Class[]{Double.TYPE};
+            Class[] methodParams = new Class[]{Double.TYPE};
 
-        Method conversionMethod = tempClass.getMethod("Pound", methodParams);
+            Method conversionMethod = tempClass.getMethod("pounds", methodParams);
 
-        Object[] params = new Object[]{(double) item.getPriceCents()};
+            Object[] params = new Object[]{(double) item.getPriceCents()};
 
-        String toQuantity = (String) conversionMethod.invoke(converFrom, params);
+            String toQuantity = (String) conversionMethod.invoke(converFrom, params);
 
-        String conversionResult = toQuantity;
+            String conversionResult = toQuantity;
 
-        double priceCents = Double.valueOf(conversionResult);
+            double priceCents = Double.valueOf(conversionResult);
 
-        double priceWhole = (priceCents / 100.00);
+            double priceWhole = (priceCents / 100.00);
 
-        String newPrice = formatPriceEuro(priceWhole);
+            String newPrice = formatPriceEuro(priceWhole);
 
-        priceText.setText(newPrice + " pounds");
+            priceText.setText(newPrice + " pounds");
 
-
-
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (java.lang.InstantiationException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -299,15 +313,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             @Override
             public void onClick(View v) {
 
-                try {
-                    convertCurrency(item);
-                } catch (ClassNotFoundException
-                        | NoSuchMethodException
-                        | IllegalAccessException
-                        | InvocationTargetException
-                        | java.lang.InstantiationException e) {
-                    e.printStackTrace();
-                }
+                convertCurrency(item);
             }
         });
 

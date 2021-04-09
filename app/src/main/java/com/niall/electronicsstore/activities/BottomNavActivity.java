@@ -72,6 +72,7 @@ public class BottomNavActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
+                        //assert frag != null;
                         getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.container, frag)
