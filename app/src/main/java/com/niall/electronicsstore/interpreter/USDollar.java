@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public class USDollar extends Expression{
+public class USDollar implements Expression{
 
 
     @Override

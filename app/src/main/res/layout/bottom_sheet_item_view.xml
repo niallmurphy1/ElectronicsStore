@@ -100,19 +100,74 @@
             android:textColor="@color/black"
             android:layout_gravity="end"
             android:textSize="20sp"
+            android:layout_marginEnd="10dp"
             android:textStyle="bold"
-            android:padding="15sp"
-            android:layout_marginBottom="15dp"/>
+            android:layout_marginBottom="10dp"/>
 
-        <Button
+        <TextView
             android:id="@+id/bap_change_currency_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Change currency"
+            android:textStyle="bold"
+            android:textColor="@color/black"
             android:layout_marginEnd="10dp"
-            android:theme="@style/Button.Light"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="end"/>
+            android:layout_gravity="center"/>
+
+        <RadioGroup
+            android:id="@+id/bap_currency_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_margin="10dp"
+            android:layout_weight="5"
+            style="@style/RadioButtonStyle"
+            >
+
+            <RadioButton android:id="@+id/radio_euro"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="€"
+                android:textColor="@color/black"
+                android:checked="true"
+            />
+
+            <RadioButton android:id="@+id/radio_pounds"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/pound_symbol"
+                android:textColor="@color/black"
+
+                />
+
+            <RadioButton android:id="@+id/radio_us_dollars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$"
+                android:textColor="@color/black"
+
+                />
+            <RadioButton android:id="@+id/radio_cad_dollars"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="$ CAD"
+                android:textColor="@color/black"
+
+                />
+            <RadioButton android:id="@+id/radio_japanese_yen"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="¥"
+                android:textColor="@color/black"
+                />
+
+
+        </RadioGroup>
 
         <Button
             android:id="@+id/add_to_cart_button"
@@ -121,10 +176,6 @@
             android:layout_marginBottom="35dp"
             android:text="Add to cart"
             android:background="@color/appDarkBlue"/>
-
-
-
-
 
 
     </LinearLayout>

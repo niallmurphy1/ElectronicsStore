@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public class CADDollar extends Expression{
+public class CADDollar implements Expression{
 
     @Override
     public String euros(double price) {

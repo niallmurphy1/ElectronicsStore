@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public abstract class Expression {
+public interface Expression {
 
     public abstract String euros(double price);
 

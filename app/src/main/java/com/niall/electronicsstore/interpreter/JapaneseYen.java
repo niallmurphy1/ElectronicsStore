@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public class JapaneseYen extends Expression{
+public class JapaneseYen implements Expression{
 
     @Override
     public String euros(double price) {

@@ -66,11 +66,7 @@ public class BottomNavActivity extends AppCompatActivity {
 
                     case R.id.catalogue_nav:
                         if (frag == null) {
-                            try {
                                 frag = new CatalogueFragment();
-                            } catch (ClassNotFoundException e) {
-                                e.printStackTrace();
-                            }
                         }
                         //assert frag != null;
                         getSupportFragmentManager()

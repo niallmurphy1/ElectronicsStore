@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public class Euro extends Expression{
+public class Euro implements Expression{
     @Override
     public String euros(double price) {
         return Double.toString(price);

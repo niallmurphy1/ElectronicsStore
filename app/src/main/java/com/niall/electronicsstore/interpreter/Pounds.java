@@ -1,6 +1,6 @@
 package com.niall.electronicsstore.interpreter;
 
-public class Pounds extends Expression{
+public class Pounds implements Expression{
 
     @Override
     public String euros(double price) {

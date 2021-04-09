@@ -25,6 +25,8 @@ import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +39,7 @@ import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
 import com.niall.electronicsstore.interpreter.Euro;
 import com.niall.electronicsstore.interpreter.Expression;
+import com.niall.electronicsstore.interpreter.Pounds;
 import com.squareup.picasso.Picasso;
 
 import java.lang.reflect.Constructor;
@@ -52,7 +55,6 @@ import java.util.Locale;
 public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.ViewHolder.OnItemListener {
 
 
-    private Euro euro;
 
     private static final String TAG = "CatalogueTAG";
     private RecyclerView recyclerView;
@@ -66,7 +68,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private ImageView headerArrowImage;
     private BottomSheetBehavior bottomSheetBehavior;
     private Button addToCartButton;
-    private Button changeCurrencyBtn;
     private ImageView itemImage;
     private TextView titleText;
     private TextView descriptionText;
@@ -74,14 +75,16 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     private TextView categoryText;
     private TextView priceText;
 
-    private Class tempClass = Class.forName("Euro.java");
+    private RadioGroup currencyRadioGroup;
+
+    private Expression converter = new Euro();
 
     private EditText searchBarEdit;
 
 
     public FirebaseAuth firebaseAuth;
 
-    public CatalogueFragment() throws ClassNotFoundException {
+    public CatalogueFragment() {
     }
 
 
@@ -168,15 +171,12 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
         setUpRCV();
 
-
         adapter.addItems(items);
         adapter.notifyDataSetChanged();
-
 
         setUpFilter();
 
         addToCartButton = view.findViewById(R.id.add_to_cart_button);
-        changeCurrencyBtn = view.findViewById(R.id.bap_change_currency_button);
 
         itemImage = view.findViewById(R.id.bap_sheet_item_image);
         titleText = view.findViewById(R.id.bap_sheet_title_text);
@@ -190,7 +190,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             @Override
             public void onClick(View v) {
 
-
                 //TODO: add items to firebase
                 addToUserCartFirebase();
             }
@@ -202,6 +201,10 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetConstraint);
         headerLayout = view.findViewById(R.id.header_layout_item_view);
         headerArrowImage = view.findViewById(R.id.bap_sheet_arrow);
+        currencyRadioGroup = view.findViewById(R.id.bap_currency_radio_group);
+        RadioButton euroRadio = view.findViewById(R.id.radio_euro);
+
+        euroRadio.setSelected(true);
 
         bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
@@ -228,46 +231,25 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             }
         });
 
+
+
+
     }
 
-    private void convertCurrency(Item item){
+    private void convertCurrency(Item item, String from, String to){
 
 
-        //Class tempClass = Class.forName("Euro");
+        double priceCents = Double.parseDouble(converter.pounds(item.getPriceCents()));
 
-        Constructor con = null;
-        try {
-            con = tempClass.getConstructor();
+        double priceWhole = (priceCents / 100.00);
 
-            Object converFrom = (Expression) con.newInstance();
+        //put a switch here for type of price
+        String newPrice = formatPricePounds(priceWhole);
 
-            Class[] methodParams = new Class[]{Double.TYPE};
+        priceText.setText(newPrice);
 
-            Method conversionMethod = tempClass.getMethod("pounds", methodParams);
 
-            Object[] params = new Object[]{(double) item.getPriceCents()};
-
-            String toQuantity = (String) conversionMethod.invoke(converFrom, params);
-
-            String conversionResult = toQuantity;
-
-            double priceCents = Double.valueOf(conversionResult);
-
-            double priceWhole = (priceCents / 100.00);
-
-            String newPrice = formatPriceEuro(priceWhole);
-
-            priceText.setText(newPrice + " pounds");
-
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (java.lang.InstantiationException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        }
+        converter = new Pounds();
 
 
     }
@@ -309,19 +291,35 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 //            descriptionText.setText("This is a cool product");
 //        }
 
-        changeCurrencyBtn.setOnClickListener(new View.OnClickListener() {
+        currencyRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
 
-                convertCurrency(item);
+
+                switch(checkedId){
+
+                    case(R.id.radio_euro):
+
+                        convertCurrency(item, "someCurrency", "Euro");
+
+                }
             }
         });
+
+
+
 
 
     }
 
     public String formatPriceEuro(double price) {
         NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.FRANCE);
+        return formatter.format(price);
+
+    }
+
+    public String formatPricePounds(double price) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.UK);
         return formatter.format(price);
 
     }
@@ -388,6 +386,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         //adapter.addItems(items);
         recyclerView.setAdapter(adapter);
     }
+
+
 
 
     public void setUpFilter() {
