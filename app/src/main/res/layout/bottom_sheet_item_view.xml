@@ -6,7 +6,7 @@
     android:background="@color/white"
     android:id="@+id/bottom_sheet_item_view"
     android:orientation="vertical"
-    app:behavior_hideable="false"
+    app:behavior_hideable="true"
     app:behavior_peekHeight="62dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
@@ -113,6 +113,13 @@
             android:textColor="@color/black"
             android:layout_marginEnd="10dp"
             android:layout_gravity="center"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(All final prices are in euros)"
+            android:layout_gravity="center"
+            />
 
         <RadioGroup
             android:id="@+id/bap_currency_radio_group"

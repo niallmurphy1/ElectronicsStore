@@ -15,7 +15,12 @@ public class Item {
     private ArrayList<String> reviews;
     private int stockLevel;
     private String description;
+    private int custQuant;
 
+
+    public Item(){
+
+    }
 
     public static Comparator<Item> itemComparatorAZName = new Comparator<Item>() {
         @Override
@@ -66,12 +71,15 @@ public class Item {
         this.description = description;
     }
 
-    public Item(String name, String manufacturer, int priceCents, String category, String image){
+    public Item(String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant){
         this.name = name;
         this.manufacturer = manufacturer;
         this.priceCents = priceCents;
         this.category = category;
         this.image = image;
+        this.description = description;
+        this.stockLevel = stockLevel;
+        this.custQuant = custQuant;
     }
 
 
@@ -154,6 +162,14 @@ public class Item {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public int getCustQuant() {
+        return custQuant;
+    }
+
+    public void setCustQuant(int custQuant) {
+        this.custQuant = custQuant;
     }
 
     @Override

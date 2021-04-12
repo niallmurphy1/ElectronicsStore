@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.ShoppingCartFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shop_cart_rcv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="This is the Shopping cart fragment" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/black"
+        android:layout_marginBottom="50dp"
+        />
 
-</FrameLayout>
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/buy_now_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Confirm and pay"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

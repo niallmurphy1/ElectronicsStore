@@ -5,13 +5,10 @@ public class Pounds implements Expression{
     @Override
     public String euros(double price) {
         return Double.toString(price * 1.16);
-
     }
-
     @Override
     public String pounds(double price) {
         return Double.toString(price);
-
     }
 
     @Override
