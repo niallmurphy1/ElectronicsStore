@@ -62,7 +62,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toBottomOf="parent"
-                android:padding="15dp">
+                android:padding="10dp">
 
                 <ImageButton
                     android:id="@+id/shop_cart_rcv_remove_quant_btn"

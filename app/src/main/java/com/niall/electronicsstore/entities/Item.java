@@ -2,6 +2,8 @@ package com.niall.electronicsstore.entities;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Item {
 
@@ -21,6 +23,8 @@ public class Item {
     public Item(){
 
     }
+
+
 
     public static Comparator<Item> itemComparatorAZName = new Comparator<Item>() {
         @Override
@@ -58,18 +62,7 @@ public class Item {
           }
       };
 
-      public Item(String id, String name, String manufacturer, int priceCents, String category, String image, double rating, ArrayList<String> reviews, int stockLevel, String description) {
-        this.id = id;
-        this.name = name;
-        this.manufacturer = manufacturer;
-        this.priceCents = priceCents;
-        this.category = category;
-        this.image = image;
-        this.rating = rating;
-        this.reviews = reviews;
-        this.stockLevel = stockLevel;
-        this.description = description;
-    }
+
 
     public Item(String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant){
         this.name = name;
@@ -81,6 +74,7 @@ public class Item {
         this.stockLevel = stockLevel;
         this.custQuant = custQuant;
     }
+
 
 
 
@@ -184,6 +178,7 @@ public class Item {
                 ", rating=" + rating +
                 ", reviews=" + reviews +
                 ", stockLevel=" + stockLevel +
+                ", custQuant=" + custQuant +
                 '}';
     }
 }

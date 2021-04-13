@@ -52,9 +52,7 @@ import java.util.Collections;
 import java.util.Locale;
 
 
-
 public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.ViewHolder.OnItemListener {
-
 
 
     private static final String TAG = "CatalogueTAG";
@@ -204,7 +202,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         priceText = view.findViewById(R.id.bap_sheet_price_text);
 
 
-
         //set up bottom sheet
         bottomSheetConstraint = view.findViewById(R.id.bottom_sheet_item_view);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetConstraint);
@@ -245,52 +242,55 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         });
 
 
+
     }
 
 
-
-    private void convertCurrency(Item item, String to){
+    private void convertCurrency(Item item, String to) {
 
 
         //TODO fix this currency malarkey, very confusing
-       switch(to){
 
-           case "Euro":
+        //definitely easier to have one base currency and not to use the pattern but....
 
-               double priceCents = Double.parseDouble(converter.euros(item.getPriceCents()));
+        switch (to) {
 
-               double priceWhole = (priceCents / 100.00);
+            case "Euro":
 
-               //put a switch here for type of price
-               String newPrice = formatPriceEuro(priceWhole);
+                double priceCents = Double.parseDouble(converter.euros(item.getPriceCents()));
 
-               priceText.setText(newPrice);
+                double priceWhole = (priceCents / 100.00);
 
-               converter = ExpressionUtil.forCode(to);
+                //put a switch here for type of price
+                String newPrice = formatPriceEuro(priceWhole);
 
-               previousChecked = R.id.radio_euro;
+                priceText.setText(newPrice);
 
-               break;
+                converter = ExpressionUtil.forCode(to);
 
-           case "Pound":
+                previousChecked = R.id.radio_euro;
 
-               double priceCentsPounds = Double.parseDouble(converter.pounds(item.getPriceCents()));
+                break;
 
-               item.setPriceCents((int) priceCentsPounds);
+            case "Pound":
 
-               double priceWholePounds = (priceCentsPounds / 100.00);
+                double priceCentsPounds = Double.parseDouble(converter.pounds(item.getPriceCents()));
 
-               //put a switch here for type of price
-               String newPricePounds = formatPricePounds(priceWholePounds);
+                item.setPriceCents((int) priceCentsPounds);
+
+                double priceWholePounds = (priceCentsPounds / 100.00);
+
+                //put a switch here for type of price
+                String newPricePounds = formatPricePounds(priceWholePounds);
 
 
-               converter = ExpressionUtil.forCode(to);
+                converter = ExpressionUtil.forCode(to);
 
-               previousChecked = R.id.radio_pounds;
+                previousChecked = R.id.radio_pounds;
 
-               break;
+                break;
 
-       }
+        }
 
 //        double priceCents = Double.parseDouble(converter.pounds(item.getPriceCents()));
 //
@@ -303,8 +303,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 //
 //        converter = ExpressionUtil.forCode(to);
 
-
-
     }
 
 
@@ -314,7 +312,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
         Log.d(TAG, "onItemClick: You clicked " + item.toString());
 
-        converter =  new Euro();
+        converter = new Euro();
 
         if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -347,15 +345,15 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
 
-                switch(checkedId){
+                switch (checkedId) {
 
-                    case(R.id.radio_euro):
+                    case (R.id.radio_euro):
 
                         convertCurrency(item, "Euro");
                         break;
 
 
-                    case(R.id.radio_pounds):
+                    case (R.id.radio_pounds):
 
                         convertCurrency(item, "Pound");
                         break;
@@ -401,7 +399,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         });
 
 
-
     }
 
     public String formatPriceEuro(double price) {
@@ -417,7 +414,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     }
 
 
-    public void retrieveCartFromFirebase(){
+    public void retrieveCartFromFirebase() {
 
         userCartRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -425,7 +422,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
                 shopCartItems.clear();
 
-                for(DataSnapshot keyNode: snapshot.getChildren()){
+                for (DataSnapshot keyNode : snapshot.getChildren()) {
 
                     Item item = keyNode.getValue(Item.class);
                     item.setId(keyNode.getKey());
@@ -445,7 +442,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     }
 
 
-
     public void fillRCV() {
 
         items.clear();
@@ -456,7 +452,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MRMH2B?wid=1144&hei=1144&fmt=jpeg&qlt=95&.v=1520717406876",
                 "\n" +
                         "Magic Keyboard with Numeric Keypad features an extended layout, with document navigation controls for quick scrolling and full-size arrow keys for gaming. A scissor mechanism beneath each key allows for increased stability, while optimised key travel and a low profile provide a comfortable and precise typing experience. The numeric keypad is also great for spreadsheets and finance applications. And the built-in, rechargeable battery is incredibly long-lasting, powering your keyboard for about a month or more between charges",
-                100, 0));
+                100,
+                0));
 
         items.add(new Item("UE MEGABOOM",
                 "Ultimate Ears",
@@ -464,7 +461,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "Speakers",
                 "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/HGPQ2?wid=1144&hei=1144&fmt=jpeg&qlt=95&op_usm=0.5,0.5&.v=1509146406671",
                 "Super-portable wireless Bluetooth speaker built for adventure. With balanced 360° sound, deep bass and serious waterproof, drop proof and dust proof, Now with one-touch music controls, it's the ultimate go-anywhere speaker.",
-                100, 0));
+                100,
+                0));
 
         items.add(new Item("Apple AirPods with charging case",
                 "Apple",
@@ -474,7 +472,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "The new AirPods deliver the wireless headphone experience, reimagined. Just pull them out of the charging case and they’re ready to use with your iPhone, Apple Watch, iPad or Mac.\n" +
                         "\n" +
                         "After a simple one-tap setup, AirPods work like magic. They’re automatically on and always connected. AirPods can even sense when they’re in your ears and pause when you take them out.",
-                100, 0));
+                100,
+                0));
 
         items.add(new Item("Lypertek Tevi Wireless Headphones",
                 "Lypertek",
@@ -487,7 +486,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                         "TEVI has the signature sound of LYPERTEK which is the result of a variety of psychoaccoustics / acoustic engineering studies and on long-standing know-how in the audio industry of LYPERTEK.\n" +
                         "\n" +
                         "A true wireless earphones are small, but it's one complete audio system. In its small housing, there's DAC which receives wireless audio signal and converts it into an analog signal, an AMP that amplifies the analog signal, and a speaker unit that plays sound with the signal.Each part of it is carefully selected and tuned for TEVI for high quality sound.",
-                100, 0));
+                100,
+                0));
 
         items.add(new Item("Garmin Venu SQ GPS Smartwatch",
                 "Garmin",
@@ -495,7 +495,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "Wearables",
                 "https://euronics.ie/uploaded/thumbnails/db_file_img_17104_600x800.jpg",
                 "With a sleek design that’s suited for every outfit and every part of your day, this watch features a bright colour display and optional always-on mode, so you can see everything with a quick glance.",
-                100, 0));
+                100,
+                0));
 
         items.add(new Item("UE FITS",
                 "Ultimate Ears",
@@ -503,7 +504,8 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "Headphones",
                 "https://cdn.shopify.com/s/files/1/0058/1576/3001/products/ohboy072020_basic_cloud_02051_1080x.jpg?v=1614382043",
                 "UE FITS are the world’s first true wireless earbuds that are custom fitted to your unique ear shape — in less time than it takes to make a cup of coffee. The result? You can wear FITS in complete comfort all day long, while enjoying exceptional noise isolation and truly immersive sound. Does this sound like magical technology from the future? We couldn’t agree more.",
-                100, 0));
+                100,
+                0));
 
 
         items.add(new Item("Google Pixel 5",
@@ -512,22 +514,50 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 "Smartphones",
                 "https://cdn.dxomark.com/wp-content/uploads/medias/post-59199/google_pixel_5_frontback.jpeg",
                 "Google Pixel 5 smartphone was launched on 30th September 2020. The phone comes with a 6.00-inch touchscreen display with a resolution of 1080x2340 pixels at a pixel density of 432 pixels per inch (ppi) and an aspect ratio of 19.5:9. Google Pixel 5 is powered by a 1.8GHz octa-core Qualcomm Snapdragon 765G processor. It comes with 8GB of RAM. The Google Pixel 5 runs Android 11 and is powered by a 4080mAh non-removable battery. The Google Pixel 5 supports wireless charging, as well as proprietary fast charging.",
-                100, 0));
+                100,
+                0));
 
+
+        items.add(new Item("MagSafe Charger",
+                "Apple",
+                4500,
+                "Accessories",
+                "https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/MHXH3?wid=1144&hei=1144&fmt=jpeg&qlt=80&.v=1603835871000",
+                "\n" +
+                        "The MagSafe Charger makes wireless charging a cinch. The perfectly aligned magnets attach to your iPhone 12 or iPhone 12 Pro and provide faster wireless charging up to 15W.\n" +
+                        "\n" +
+                        "The MagSafe Charger maintains compatibility with Qi charging, so it can be used to wirelessly charge your iPhone 8 or later, as well as AirPods models with a wireless charging case, as you would with any Qi-certified charger.\n" +
+                        "\n" +
+                        "The magnetic alignment experience only applies to iPhone 12 and iPhone 12 Pro models.",
+                100,
+                0));
 
 
     }
 
-    public void addItemsToFirebase(ArrayList<Item> items){
-
-        DatabaseReference db = FirebaseDatabase.getInstance().getReference("Item");
-
-        for(Item item : items){
-
-
-
-        }
-    }
+//    public void addItemsToFirebase(ArrayList<Item> items) {
+//
+//        DatabaseReference db = FirebaseDatabase.getInstance().getReference("Item");
+//
+//
+//        for(Item item: items){
+//
+//            String key = db.push().getKey();
+//
+//            assert key != null;
+//
+//            db.child(key).setValue(item).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//
+//                    Log.d(TAG, "onSuccess: Item created: " + item.getName());
+//                }
+//            });
+//
+//        }
+//
+//
+//    }
 
 
     public void setUpRCV() {
@@ -538,8 +568,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         //adapter.addItems(items);
         recyclerView.setAdapter(adapter);
     }
-
-
 
 
     public void setUpFilter() {
