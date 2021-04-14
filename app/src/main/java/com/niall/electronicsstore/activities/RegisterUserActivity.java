@@ -115,7 +115,7 @@ public class RegisterUserActivity extends AppCompatActivity {
 
 
 
-                            User aUser = new User.UserBuilder(emailEdit.getText().toString(), newName)
+                            User aUser = new User.UserBuilder(emailEdit.getText().toString(), newName, false)
                                     .address(new Address.AddressBuilder(addressLine1Edit.getText().toString()
                                             , addressLine2Edit.getText().toString()
                                             , zipEdit.getText().toString()

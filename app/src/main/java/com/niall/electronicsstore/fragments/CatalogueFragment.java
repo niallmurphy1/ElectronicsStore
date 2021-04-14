@@ -38,7 +38,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.niall.electronicsstore.R;
 import com.niall.electronicsstore.activities.RegLogActivity;
-import com.niall.electronicsstore.activities.RegisterUserActivity;
 import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
 import com.niall.electronicsstore.interpreter.Euro;
@@ -175,6 +174,12 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void addCouponsToFirebase(){
+
+
     }
 
     @Override

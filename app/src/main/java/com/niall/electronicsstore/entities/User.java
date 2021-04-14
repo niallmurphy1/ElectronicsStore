@@ -1,6 +1,8 @@
 package com.niall.electronicsstore.entities;
 
 
+import java.util.ArrayList;
+
 public class User {
 
     private String email;
@@ -9,10 +11,14 @@ public class User {
     private Address address;
     private AdminDetails adminDetails;
     private PurchaseHistory purchaseHistory;
+    private boolean isAdmin;
+    private ArrayList<Item> userShopCart;
 
     public User(){
 
     }
+
+
 
     private User(UserBuilder userBuilder) {
         this.email = userBuilder.email;
@@ -21,6 +27,8 @@ public class User {
         this.address = userBuilder.address;
         this.adminDetails = userBuilder.adminDetails;
         this.purchaseHistory = userBuilder.purchaseHistory;
+        this.isAdmin = userBuilder.isAdmin;
+        this.userShopCart = userBuilder.userShopCart;
     }
 
     public static class UserBuilder {
@@ -31,10 +39,13 @@ public class User {
         private Address address;
         private AdminDetails adminDetails;
         private PurchaseHistory purchaseHistory;
+        private boolean isAdmin;
+        private ArrayList<Item> userShopCart;
 
-        public UserBuilder(String email, Name name){
+        public UserBuilder(String email, Name name, boolean isAdmin){
             this.email = email;
             this.name = name;
+            this.isAdmin = isAdmin;
         }
 
         public UserBuilder email(final String email) {
@@ -68,6 +79,15 @@ public class User {
             return this;
         }
 
+        public UserBuilder isAdmin(final boolean isAdmin){
+            this.isAdmin = isAdmin;
+            return this;
+        }
+
+        public UserBuilder userShopCart(final ArrayList<Item> userShopCart){
+            this.userShopCart = userShopCart;
+            return this;
+        }
         private boolean isValidData(){
 
             return true;
@@ -79,6 +99,8 @@ public class User {
         }
 
     }
+
+
 
 
     public String getEmail() {

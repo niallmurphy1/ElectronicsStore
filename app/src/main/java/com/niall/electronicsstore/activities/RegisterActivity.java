@@ -100,7 +100,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                             User aUser;
 
-                            aUser = new User.UserBuilder(emailEdit.getText().toString(), newName)
+                            aUser = new User.UserBuilder(emailEdit.getText().toString(), newName, true)
                                         .adminDetails(new AdminDetails.AdminBuilder("1234567890", "Sales Associate")
                                                 .build())
                                         .build();

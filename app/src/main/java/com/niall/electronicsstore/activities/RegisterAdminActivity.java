@@ -159,7 +159,7 @@ public class RegisterAdminActivity extends AppCompatActivity {
 
                                 AdminDetails adminDetails = new AdminDetails.AdminBuilder(employeeIDEdit.getText().toString(), jobTitle).build();
 
-                                User adminUser = new User.UserBuilder(getEmailInput(), adminName)
+                                User adminUser = new User.UserBuilder(getEmailInput(), adminName, true)
                                         .adminDetails(adminDetails).build();
 
 

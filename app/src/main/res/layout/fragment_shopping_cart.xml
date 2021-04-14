@@ -35,7 +35,7 @@
         android:id="@+id/shop_cart_subtotal_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@id/confirm_and_pay_btn"
+        app:layout_constraintBottom_toTopOf="@id/apply_coupon_btn"
         app:layout_constraintStart_toStartOf="parent"
         android:text="Subtotal: "
         android:textStyle="bold"
@@ -45,11 +45,23 @@
         android:background="@color/black"
         android:paddingEnd="30dp"/>
 
+
+    <Button
+        android:layout_marginTop="20dp"
+        android:id="@+id/apply_coupon_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/confirm_and_pay_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="Apply coupon"
+        />
+
+
     <Button
         android:layout_marginTop="20dp"
         android:id="@+id/confirm_and_pay_btn"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="75dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:text="Confirm and pay"
