@@ -18,6 +18,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -35,7 +37,6 @@ import com.niall.electronicsstore.decorator.TenPercent;
 import com.niall.electronicsstore.decorator.TwentyPercent;
 import com.niall.electronicsstore.decorator.UserCoupon;
 import com.niall.electronicsstore.entities.Item;
-import com.niall.electronicsstore.entities.User;
 import com.niall.electronicsstore.util.NumberFormatter;
 
 import java.util.ArrayList;
@@ -64,15 +65,23 @@ public class ShoppingCartFragment extends Fragment {
 
     private Coupon userCoupon;
 
-
-    private User currentUser;
-
     //Firebase variables
     private DatabaseReference itemRef;
     private DatabaseReference userCartRef;
-    private DatabaseReference userRef;
+    private DatabaseReference userAdminCheckRef;
+    private DatabaseReference userCardRef;
     private FirebaseAuth mainAuth;
     private String userId;
+    private String userCardNo;
+    private DatabaseReference userPurchasedItemsRef;
+
+
+    //confirmPaymentDialog variables
+    private TextView dialogTotalItemsText;
+    private TextView dialogSubtotalText;
+    private TextView dialogCouponDiscountPercentText;
+    private TextView dialogTotalCostText;
+
 
     private boolean isAdmin;
     private EditText couponCodeEdit;
@@ -90,11 +99,15 @@ public class ShoppingCartFragment extends Fragment {
         mainAuth = FirebaseAuth.getInstance();
         userId = mainAuth.getUid();
 
-        userRef = FirebaseDatabase.getInstance().getReference("User");
+        userAdminCheckRef = FirebaseDatabase.getInstance().getReference("User");
+        userCardRef = FirebaseDatabase.getInstance().getReference("User");
         userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
         itemRef = FirebaseDatabase.getInstance().getReference("Item");
+        userPurchasedItemsRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-purchasedItems");
 
         formatter = new NumberFormatter();
+
+        getUser();
     }
 
     @Override
@@ -139,12 +152,12 @@ public class ShoppingCartFragment extends Fragment {
 
     public void getUser() {
 
-        Log.d(TAG, "getUser: " + userRef.child(userId).child("adminDetails").child("employeeID").toString());
+        Log.d(TAG, "getUser: " + userAdminCheckRef.child(userId).child("adminDetails").child("employeeID").toString());
 
-
-        userRef.child(userId).child("adminDetails").child("employeeID").addValueEventListener(new ValueEventListener() {
+        userAdminCheckRef.child(userId).child("adminDetails").child("employeeID").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
 
                 if(snapshot.getValue() != null){
                     Log.d(TAG, "onDataChange: great success " + snapshot.getValue() );
@@ -163,133 +176,269 @@ public class ShoppingCartFragment extends Fragment {
             }
         });
 
+
+        userCardRef.child(userId).child("paymentMethod").child("cardNumber").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+
+                if(snapshot.getValue() != null){
+                    Log.d(TAG, "onDataChange: great success, user card " + snapshot.getValue() );
+                    userCardNo = snapshot.getValue(String.class);
+                }
+                else{
+                    Log.d(TAG, "onDataChange: User is an admin, no card in database: " + snapshot.getValue());
+
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+
+    public String getCardDigits(String cardNo){
+
+        //Called if user is not admin
+        return cardNo.substring(cardNo.length() - 4);
     }
     private void openCouponDialog() {
 
-        getUser();
+
+        if(cartItems.size() < 1){
+
+            Log.d(TAG, "openCouponDialog: Cart items < 1: " + cartItems.toString());
+            Snackbar.make(Objects.requireNonNull(getView()), "You have no items in your cart, browse the catalogue to add items!", Snackbar.LENGTH_LONG).show();
+        }
+
+        else {
+            userCoupon = new UserCoupon();
+
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_coupon_code, null);
+            builder.setView(dialogView);
+            builder.setTitle("Coupon");
+            builder.setPositiveButton("Apply", (dialog, which) -> {
+
+                couponCodeEdit = dialogView.findViewById(R.id.dialog_admin_discount_text);
+                String couponCode = couponCodeEdit.getText().toString();
 
 
-        userCoupon = new UserCoupon();
+                switch (couponCode) {
 
-        //TODO: add coupon codes and decorate coupon based on code, standard 10% off for admins, 0% for users, add code to
+                    case ("USER10"):
+                        userCoupon = new TenPercent(userCoupon);
+                        Toast.makeText(getActivity(), "Coupon: " + userCoupon.code() + " " + userCoupon.discount() * 100 + "% off!", Toast.LENGTH_SHORT).show();
 
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_coupon_code,null);
-        builder.setView(dialogView);
-        builder.setTitle("Coupon");
-        builder.setPositiveButton("Apply", (dialog, which) -> {
+                        //TODO: get snackbars working here
+                        Snackbar.make(getView(), userCoupon.code() + " " + userCoupon.discount() * 100 + "% off!", Snackbar.LENGTH_LONG)
+                                .setBackgroundTint(getResources().getColor(R.color.appLightBlue));
+                        break;
 
-            couponCodeEdit = dialogView.findViewById(R.id.dialog_admin_discount_text);
-            String couponCode = couponCodeEdit.getText().toString();
+                    case ("USER20"):
+                        userCoupon = new TwentyPercent(userCoupon);
+                        Toast.makeText(getActivity(), userCoupon.code() + " " + userCoupon.discount() * 100 + "% off!", Toast.LENGTH_SHORT).show();
 
-
-            switch(couponCode){
-
-                case("USER10"):
-                    userCoupon = new TenPercent(userCoupon);
-                    Toast.makeText(getActivity(),"Coupon: " + userCoupon.getName() + " " + userCoupon.discount() * 100 + "% off!" , Toast.LENGTH_SHORT).show();
-
-                    //TODO: get snackbars working here
-                    //Snackbar.make(getView(), "Coupon: " + userCoupon.getName() + " " + userCoupon.discount() * 100 + "% off!", Snackbar.LENGTH_LONG)
-                            //.setBackgroundTint(getResources().getColor(R.color.appLightBlue));
-                    break;
-
-                case("USER20"):
-                    userCoupon = new TwentyPercent(userCoupon);
-                    Toast.makeText(getActivity(),"Coupon: " + userCoupon.getName() + " " + userCoupon.discount() * 100 + "% off!" , Toast.LENGTH_SHORT).show();
-
-                    break;
+                        break;
 
 
-                case("USER50"):
-                    userCoupon = new HalfPrice(userCoupon);
-                    Toast.makeText(getActivity(),"Coupon: " + userCoupon.getName() + " " + userCoupon.discount() * 100 + "% off!" , Toast.LENGTH_SHORT).show();
+                    case ("USER50"):
+                        userCoupon = new HalfPrice(userCoupon);
+                        Toast.makeText(getActivity(), userCoupon.code() + " " + userCoupon.discount() * 100 + "% off!", Toast.LENGTH_SHORT).show();
 
-                    break;
+                        break;
 
-                default:
-                    Toast.makeText(getActivity(), "Coupon code not recognised", Toast.LENGTH_SHORT).show();
+                    default:
+                        Toast.makeText(getActivity(), "Coupon code not recognised", Toast.LENGTH_SHORT).show();
 
-                    break;
+                        break;
 
-            }
+                }
 
-            subtotalCents = subtotalCents - (int) (subtotalCents * (userCoupon.discount()));
-            Log.d(TAG, "openCouponDialog: subtotalCents value: " + subtotalCents);
+                //subtotalCents = subtotalCents - (int) (subtotalCents * (userCoupon.discount()));
+                Log.d(TAG, "openCouponDialog: subtotalCents value: " + subtotalCents);
 
-        });
+            });
 
-        AlertDialog alertDialog = builder.create();
+            builder.setNegativeButton("Dismiss",  (dialog, which) -> {
 
-        alertDialog.show();
+                dialog.dismiss();
+                    });
 
-        couponCodeEdit = alertDialog.findViewById(R.id.dialog_admin_discount_text);
-        adminDiscountBtn = alertDialog.findViewById(R.id.dialog_admin_discount_btn);
+            AlertDialog alertDialog = builder.create();
+
+            alertDialog.show();
+
+            couponCodeEdit = alertDialog.findViewById(R.id.dialog_admin_discount_text);
+            adminDiscountBtn = alertDialog.findViewById(R.id.dialog_admin_discount_btn);
 
 
-       // if(!isAdmin) couponCodeEdit.setVisibility(View.INVISIBLE);
+            assert adminDiscountBtn != null;
+            adminDiscountBtn.setOnClickListener(v -> {
 
+                if (isAdmin) {
 
-        adminDiscountBtn.setOnClickListener(v -> {
+                    //Create AdminCoupon object
+                    //apply discount to textview
+                    Coupon coupon = new AdminCoupon();
 
-            if(!isAdmin){
+                    Snackbar.make(Objects.requireNonNull(getView()), "Admin coupon applied: " + coupon.discount() * 100 + "% off", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.appBlue)).show();
 
-                //Create AdminCoupon object
-                //apply discount to textview
-                Coupon coupon = new AdminCoupon();
+                } else {
+                    Snackbar.make(Objects.requireNonNull(getView()), "You are not an admin", Snackbar.LENGTH_LONG).show();
+                }
 
-                Snackbar.make(getView(), "Admin coupon applied: " + coupon.discount() * 100 + "% off", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.appBlue)).show();
-
-            }
-            else{
-                Snackbar.make(getView(), "You are not an admin", Snackbar.LENGTH_LONG).show();
-            }
-
-        });
-
+            });
+        }
     }
 
     //TODO: set all this up, apply discounts in dialog, visa ending in 0919...
     // 'purchase charged to employee account' for admins
     // clear shopping list in firebase, potential 'Purchased items rcv' like categories in child rcv shopping list categories?
 
-    public void openConfirmPayDialog(){
-
-    }
 
     public void getSubtotalAndNum(List<Item> items){
 
+        subtotalText.setText("");
+
+        subtotalCents = 0;
         int numItems = 0;
 
 
-
         for (Item item : items) {
-
-
             subtotalCents += item.getPriceCents() * item.getCustQuant();
-
-
             numItems += item.getCustQuant();
         }
-        subtotalText.setText("Subtotal: " +formatter.formatPriceEuros(subtotalCents));
+        subtotalText.setText("Subtotal: " +NumberFormatter.formatPriceEuros(subtotalCents));
 
         numItemsText.setText("Total items(s): " + numItems);
     }
 
 
+
+
     private void confirmAndPay() {
 
-        for(Item allItem: allItems){
+        //TODO: set up dialog, based on user isAdmin, rcv for products, total cost, txtView for coupons applied with discount, subtotal;
+        // admin cost applied to 'admin account', stock taken away
 
-            for(Item cartItem: cartItems){
-                if(allItem.getName().equals(cartItem.getName())){
-                    itemRef.child(allItem.getId()).child("stockLevel").setValue(allItem.getStockLevel() - cartItem.getCustQuant());
-                }
+        if(cartItems.size() < 1){
+
+            Log.d(TAG, "openCouponDialog: Cart items < 1: " + cartItems.toString());
+            Snackbar.make(Objects.requireNonNull(getView()), "You have no items in your cart, browse the catalogue to add items!", Snackbar.LENGTH_LONG).show();
+        }else {
+            // do everything
+
+            MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
+            View dialogView = getLayoutInflater().inflate(R.layout.dialog_confirm_purchase, null);
+            builder.setView(dialogView);
+
+            dialogTotalItemsText = dialogView.findViewById(R.id.confirm_pay_dialog_total_items_text);
+            dialogSubtotalText = dialogView.findViewById(R.id.confirm_pay_dialog_subtotal_text);
+            dialogCouponDiscountPercentText = dialogView.findViewById(R.id.confirm_pay_dialog_coupon_discount_text);
+            dialogTotalCostText = dialogView.findViewById(R.id.confirm_pay_dialog_total_cost_text);
+
+            dialogTotalItemsText.setText("No. of item(s): " + cartItems.size());
+            dialogSubtotalText.setText("Subtotal: " + NumberFormatter.formatPriceEuros(subtotalCents));
+
+            //TODO: fix this to account for no coupon added and maths with discount
+            if(userCoupon != null) {
+                dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount()) + "%");
+                dialogTotalCostText.setText((int) (((double) subtotalCents) * userCoupon.discount())+ " €");
+            }
+            else{
+                dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
+            }
+
+
+            //TODO: start previous purchased activity
+
+            confirmAndPayBtn = dialogView.findViewById(R.id.confirm_pay_dialog_confirm_pay_btn);
+
+            if(isAdmin){
+                confirmAndPayBtn.setText("Pay as admin");
+            }
+            else{
+                confirmAndPayBtn.setText(String.format("Pay with card ending %s", getCardDigits(userCardNo)));
+            }
+            builder.setTitle("Confirm and Pay");
+            builder.setNegativeButton("Dismiss",  (dialog, which) -> {
+
+                dialog.dismiss();
+            });
+
+            AlertDialog alertDialog = builder.create();
+
+            alertDialog.show();
+
+            confirmAndPayBtn.setOnClickListener(v -> {
+
+                    for (Item allItem : allItems) {
+
+                        for (Item cartItem : cartItems) {
+                            if (allItem.getName().equals(cartItem.getName())) {
+                                itemRef.child(allItem.getId()).child("stockLevel").setValue(allItem.getStockLevel() - cartItem.getCustQuant());
+                            }
+                            else if(allItem.getStockLevel() == 0 || cartItem.getCustQuant() > allItem.getStockLevel()){
+                                Toast.makeText(getActivity(), "Cannot complete payment, not enough items in stock!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    if(isAdmin){
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), "Payment complete on work account", Toast.LENGTH_SHORT).show();
+
+                    }
+                    else{
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), "Payment completed with Visa ending: " + getCardDigits(userCardNo), Toast.LENGTH_SHORT).show();
+
+                    }
+                    addToPurchasedItems();
+
+            });
+        }
+    }
+
+    public void addToPurchasedItems() {
+
+        for (Item cartItem : cartItems) {
+
+                String key = userPurchasedItemsRef.push().getKey();
+
+                assert key != null;
+
+                userPurchasedItemsRef.child(key).setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Log.d(TAG, "onSuccess: Item added to purchased: " + cartItem.getName());
+
+                        clearShopList();
+
+                    }
+                });
             }
         }
 
-        //start confirmation screen activity
 
+    public void clearShopList(){
+        userCartRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: User cart cuccessfully deleted");
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+                Log.e(TAG, "onFailure: Cart not deleted " + e.getLocalizedMessage(), e);
+            }
+        });
     }
 
     void retrieveItemsFromFirebase(){
@@ -338,9 +487,6 @@ public class ShoppingCartFragment extends Fragment {
 
                 getSubtotalAndNum(cartItems);
 
-
-
-
             }
 
             @Override
@@ -348,18 +494,12 @@ public class ShoppingCartFragment extends Fragment {
 
             }
         });
-
-
     }
 
-
     public void setUpRCV(){
-
             recyclerView = getView().findViewById(R.id.shop_cart_rcv);
             adapter = new ShopCartItemAdapter(getContext());
             recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
             recyclerView.setAdapter(adapter);
-
-
     }
 }

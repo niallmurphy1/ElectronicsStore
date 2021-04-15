@@ -1,6 +1,8 @@
 package com.niall.electronicsstore.decorator;
 
-public class AdminCoupon extends Coupon{
+public class AdminCoupon implements Coupon{
+
+    String name;
 
     public AdminCoupon(){
 
@@ -16,4 +18,6 @@ public class AdminCoupon extends Coupon{
     public double discount() {
         return .10;
     }
+
+
 }

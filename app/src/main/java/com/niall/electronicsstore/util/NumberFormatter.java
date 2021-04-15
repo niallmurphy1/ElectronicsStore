@@ -9,7 +9,7 @@ public class NumberFormatter {
     public NumberFormatter(){
 
     }
-    public String formatPriceEuros(int priceCents){
+    public static String formatPriceEuros(int priceCents){
 
         double price = priceCents / 100.00;
 

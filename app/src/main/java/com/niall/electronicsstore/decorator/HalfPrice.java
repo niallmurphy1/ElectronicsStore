@@ -5,12 +5,13 @@ public class HalfPrice extends CouponDecorator{
     Coupon coupon;
 
     public HalfPrice(Coupon coupon){
+        super(coupon);
         this.coupon = coupon;
     }
 
     @Override
     public String getDescription() {
-        return coupon.getName() + " + 50%!";
+        return name + " + 50%!";
     }
 
     @Override
@@ -22,4 +23,6 @@ public class HalfPrice extends CouponDecorator{
     public double discount() {
         return coupon.discount() + .50;
     }
+
+
 }

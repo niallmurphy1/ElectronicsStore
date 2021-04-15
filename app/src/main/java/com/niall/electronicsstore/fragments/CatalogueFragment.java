@@ -148,14 +148,14 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
             case R.id.sort_by_price_high_low:
                 Collections.sort(items, Item.itemComparatorPriceHighLow);
                 adapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "Sort Price: Low-High", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Sort Price: High->Low", Toast.LENGTH_SHORT).show();
                 return true;
 
 
             case R.id.sort_by_price_low_high:
                 Collections.sort(items, Item.itemComparatorPriceLowHigh);
                 adapter.notifyDataSetChanged();
-                Toast.makeText(getContext(), "Sort Price: High->Low", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Sort Price: Low->High", Toast.LENGTH_SHORT).show();
                 return true;
 
             case R.id.sort_by_manufacturer:
@@ -176,11 +176,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         return super.onOptionsItemSelected(item);
     }
 
-
-    public void addCouponsToFirebase(){
-
-
-    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -281,6 +276,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
                 double priceCentsPounds = Double.parseDouble(converter.pounds(item.getPriceCents()));
 
+                //TODO: change this to a variable, don't want to write to firebase with different currencies, all based in euro
                 item.setPriceCents((int) priceCentsPounds);
 
                 double priceWholePounds = (priceCentsPounds / 100.00);

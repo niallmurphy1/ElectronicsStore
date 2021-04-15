@@ -5,12 +5,13 @@ public class TenPercent extends CouponDecorator{
     Coupon coupon;
 
     public TenPercent(Coupon coupon){
+        super(coupon);
         this.coupon = coupon;
     }
 
     @Override
     public String getDescription() {
-        return coupon.getName() + " + 10%!";
+        return name + " + 10%!";
     }
 
     @Override

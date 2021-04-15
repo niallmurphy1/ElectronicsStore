@@ -1,6 +1,8 @@
 package com.niall.electronicsstore.decorator;
 
-public class UserCoupon extends Coupon{
+public class UserCoupon implements Coupon{
+
+    String name;
 
     public UserCoupon(){
 
