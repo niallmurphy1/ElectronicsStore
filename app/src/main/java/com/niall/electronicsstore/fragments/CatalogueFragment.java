@@ -45,6 +45,7 @@ import com.niall.electronicsstore.interpreter.Expression;
 import com.niall.electronicsstore.util.ExpressionUtil;
 import com.squareup.picasso.Picasso;
 
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -100,15 +101,10 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         super.onCreate(savedInstanceState);
 
         firebaseAuth = FirebaseAuth.getInstance();
-
         userId = mainAuth.getUid();
-
         setHasOptionsMenu(true);
-
         shopCartItems = new ArrayList<>();
-
-        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
-
+        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
         retrieveCartFromFirebase();
 
     }
@@ -248,16 +244,16 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
     private void convertCurrency(Item item, String to) {
 
-
-        //TODO fix this currency malarkey, very confusing
-
         //definitely easier to have one base currency and not to use the pattern but....
 
         switch (to) {
 
             case "Euro":
 
-                double priceCents = Double.parseDouble(converter.euros(item.getPriceCents()));
+                Log.d(TAG, "convertCurrency: priceText.getText.ToString() " + priceText.getText().toString());
+                Log.d(TAG, "convertCurrency:  result of getPriceCents() with priceText.getText().toString() " + getPriceCents(priceText.getText().toString()));
+
+                double priceCents = Double.parseDouble(converter.euros(getPriceCents(priceText.getText().toString())));
 
                 double priceWhole = (priceCents / 100.00);
 
@@ -273,17 +269,21 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 break;
 
             case "Pound":
+                Log.d(TAG, "convertCurrency: priceText.getText.ToString() " + priceText.getText().toString());
+                Log.d(TAG, "convertCurrency:  result of getPriceCents() with priceText.getText().toString() " + getPriceCents(priceText.getText().toString()));
 
-                double priceCentsPounds = Double.parseDouble(converter.pounds(item.getPriceCents()));
+
+                double priceCentsPounds = Double.parseDouble(converter.pounds(getPriceCents(priceText.getText().toString())));
 
                 //TODO: change this to a variable, don't want to write to firebase with different currencies, all based in euro
-                item.setPriceCents((int) priceCentsPounds);
+                //item.setPriceCents((int) priceCentsPounds);
 
                 double priceWholePounds = (priceCentsPounds / 100.00);
 
                 //put a switch here for type of price
                 String newPricePounds = formatPricePounds(priceWholePounds);
 
+                priceText.setText(newPricePounds);
 
                 converter = ExpressionUtil.forCode(to);
 
@@ -291,7 +291,60 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
                 break;
 
+            case "US Dollar":
+
+                Log.d(TAG, "convertCurrency: priceText.getText.ToString() " + priceText.getText().toString());
+                Log.d(TAG, "convertCurrency:  result of getPriceCents() with priceText.getText().toString() " + getPriceCents(priceText.getText().toString()));
+
+                double priceCentsUSDollar = Double.parseDouble(converter.dollarsUS(getPriceCents(priceText.getText().toString())));
+
+                double priceWholeUSDollars = (priceCentsUSDollar / 100.00);
+
+                //put a switch here for type of price
+                String newPriceUSDollar = formatPriceUSDollars(priceWholeUSDollars);
+
+                priceText.setText(newPriceUSDollar);
+
+                converter = ExpressionUtil.forCode(to);
+
+                previousChecked = R.id.radio_us_dollars;
+
+                break;
+
+
+
+            case "CAD Dollar":
+
+
+                Log.d(TAG, "convertCurrency: priceText.getText.ToString() " + priceText.getText().toString());
+                Log.d(TAG, "convertCurrency:  result of getPriceCents() with priceText.getText().toString() " + getPriceCents(priceText.getText().toString()));
+
+
+
+                double priceCentsCADDollar = Double.parseDouble(converter.dollarsCAD(getPriceCents(priceText.getText().toString())));
+
+                //TODO: change this to a variable, don't want to write to firebase with different currencies, all based in euro
+
+                // item.setPriceCents((int) priceCentsPounds);
+
+                double priceWholeCADDollars = (priceCentsCADDollar / 100.00);
+
+                //put a switch here for type of price
+                String newPriceCADDollar = formatPriceCADDollars(priceWholeCADDollars);
+
+                priceText.setText(newPriceCADDollar);
+
+                converter = ExpressionUtil.forCode(to);
+
+                previousChecked = R.id.radio_cad_dollars;
+
+                break;
+
+
         }
+
+
+
 
 //        double priceCents = Double.parseDouble(converter.pounds(item.getPriceCents()));
 //
@@ -306,9 +359,17 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
     }
 
+    public void getCurrentPriceText(){
+
+        //TODO: find a way to get this price each time in the text field, regex perhaps, then use that to convert instead of item.getPriceCents()
+       // String priceText.getText()
+
+    }
+
 
     @Override
     public void onItemClick(Item item) {
+
 
 
         Log.d(TAG, "onItemClick: You clicked " + item.toString());
@@ -320,7 +381,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         } else {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
-
 
         Picasso.get()
                 .load(item.getImage())
@@ -358,6 +418,18 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
                         convertCurrency(item, "Pound");
                         break;
+
+
+                    case (R.id.radio_us_dollars):
+
+                        convertCurrency(item, "US Dollar");
+                        break;
+
+                    case (R.id.radio_cad_dollars):
+
+                        convertCurrency(item, "CAD Dollar");
+                        break;
+
                 }
             }
         });
@@ -380,7 +452,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
                 }
 
                 if (!duplicate) {
-                    DatabaseReference db = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
+                    DatabaseReference db = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
 
                     String key = db.push().getKey();
 
@@ -403,8 +475,7 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     }
 
     public String formatPriceEuro(double price) {
-        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.FRANCE);
-        return formatter.format(price);
+        return  formatValue(price);
 
     }
 
@@ -413,6 +484,22 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         return formatter.format(price);
 
     }
+    public String formatPriceCADDollars(double price) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.CANADA);
+        return formatter.format(price);
+
+    }
+    public String formatPriceYen(double price) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.JAPAN);
+        return formatter.format(price);
+
+    }
+    public String formatPriceUSDollars(double price) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance(Locale.US);
+        return formatter.format(price);
+
+    }
+
 
 
     public void retrieveCartFromFirebase() {
@@ -593,5 +680,25 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         });
     }
 
+
+    public double getPriceCents(String priceTextString){
+
+        if(priceTextString.contains(",")){
+            priceTextString = priceTextString.replace(",", "");
+
+        }else if(priceTextString.contains(".")){
+            priceTextString = priceTextString.replace(".", "");
+
+        }
+        priceTextString = priceTextString.substring(1);
+
+        return  Double.parseDouble(priceTextString);
+
+    }
+
+    private static final DecimalFormat EURO_FORMAT = new DecimalFormat("€0.00");
+    private String formatValue (double price){
+        return EURO_FORMAT.format(price);
+    }
 
 }

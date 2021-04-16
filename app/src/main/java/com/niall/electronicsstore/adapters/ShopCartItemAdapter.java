@@ -70,7 +70,7 @@ public class ShopCartItemAdapter extends RecyclerView.Adapter<ShopCartItemAdapte
 
     public void addQuant(Item cartItem) {
 
-        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
+        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
 
         userCartRef.child(cartItem.getId()).child("custQuant").setValue(cartItem.getCustQuant() + 1);
 
@@ -79,7 +79,7 @@ public class ShopCartItemAdapter extends RecyclerView.Adapter<ShopCartItemAdapte
 
     public void removeQuant(Item cartItem) {
 
-        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
+        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
 
         if (cartItem.getCustQuant() > 1) {
             userCartRef.child(cartItem.getId()).child("custQuant").setValue(cartItem.getCustQuant() - 1);
@@ -91,7 +91,7 @@ public class ShopCartItemAdapter extends RecyclerView.Adapter<ShopCartItemAdapte
 
     public void removeFromFirebase(Item cartItem) {
 
-        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
+        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
 
 
         userCartRef.addValueEventListener(new ValueEventListener() {

@@ -11,7 +11,6 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
 
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -166,15 +165,6 @@
                 android:textColor="@color/black"
 
                 />
-            <RadioButton android:id="@+id/radio_japanese_yen"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="¥"
-                android:textColor="@color/black"
-                />
-
-
         </RadioGroup>
 
         <Button

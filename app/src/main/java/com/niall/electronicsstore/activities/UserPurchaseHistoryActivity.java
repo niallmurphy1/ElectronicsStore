@@ -16,6 +16,8 @@ import com.niall.electronicsstore.entities.Item;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
 
 public class UserPurchaseHistoryActivity extends AppCompatActivity {
 
@@ -34,7 +36,9 @@ public class UserPurchaseHistoryActivity extends AppCompatActivity {
         mainAuth = FirebaseAuth.getInstance();
         mainAuth.getCurrentUser();
         userId = mainAuth.getUid();
-        userPurchaseHistoryRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-purchasedItems");
+        userPurchaseHistoryRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userPurchasedItems");
+
+        getPurchaseHistoryFromFirebase();
     }
 
 
@@ -65,6 +69,11 @@ public class UserPurchaseHistoryActivity extends AppCompatActivity {
 
             }
         });
+
+    }
+
+    public void removeDuplicatesAddQuantities(ArrayList<String> itemNames){
+
 
     }
 

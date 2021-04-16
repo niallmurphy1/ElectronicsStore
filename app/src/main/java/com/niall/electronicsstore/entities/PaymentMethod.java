@@ -8,6 +8,9 @@ public class PaymentMethod {
     private int expMonth;
     private int expYear;
 
+    public PaymentMethod(){
+
+    }
     private PaymentMethod(PaymentMethodBuilder paymentMethodBuilder){
         this.nameOnCard = paymentMethodBuilder.nameOnCard;
         this.cardNumber = paymentMethodBuilder.cardNumber;

@@ -2,6 +2,7 @@ package com.niall.electronicsstore.entities;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ public class Item {
     private int stockLevel;
     private String description;
     private int custQuant;
+    private Date datePurchased;
 
 
     public Item(){
@@ -63,6 +65,13 @@ public class Item {
       };
 
 
+    public Date getDatePurchased() {
+        return datePurchased;
+    }
+
+    public void setDatePurchased(Date datePurchased) {
+        this.datePurchased = datePurchased;
+    }
 
     public Item(String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant){
         this.name = name;
@@ -73,6 +82,20 @@ public class Item {
         this.description = description;
         this.stockLevel = stockLevel;
         this.custQuant = custQuant;
+    }
+
+    public Item(String id, String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant, double rating, Date datePurchased){
+        this.id =id;
+        this.name = name;
+        this.manufacturer = manufacturer;
+        this.priceCents = priceCents;
+        this.category = category;
+        this.image = image;
+        this.description = description;
+        this.stockLevel = stockLevel;
+        this.custQuant = custQuant;
+        this.rating = rating;
+        this.datePurchased = datePurchased;
     }
 
 
@@ -165,6 +188,8 @@ public class Item {
     public void setCustQuant(int custQuant) {
         this.custQuant = custQuant;
     }
+
+
 
     @Override
     public String toString() {

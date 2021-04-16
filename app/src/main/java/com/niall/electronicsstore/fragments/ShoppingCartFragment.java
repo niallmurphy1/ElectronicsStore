@@ -1,5 +1,6 @@
 package com.niall.electronicsstore.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -29,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.niall.electronicsstore.R;
+import com.niall.electronicsstore.activities.UserPurchaseHistoryActivity;
 import com.niall.electronicsstore.adapters.ShopCartItemAdapter;
 import com.niall.electronicsstore.decorator.AdminCoupon;
 import com.niall.electronicsstore.decorator.Coupon;
@@ -101,9 +103,9 @@ public class ShoppingCartFragment extends Fragment {
 
         userAdminCheckRef = FirebaseDatabase.getInstance().getReference("User");
         userCardRef = FirebaseDatabase.getInstance().getReference("User");
-        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-shopCart");
+        userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
         itemRef = FirebaseDatabase.getInstance().getReference("Item");
-        userPurchasedItemsRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("user-purchasedItems");
+        userPurchasedItemsRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userPurchasedItems");
 
         formatter = new NumberFormatter();
 
@@ -296,11 +298,6 @@ public class ShoppingCartFragment extends Fragment {
         }
     }
 
-    //TODO: set all this up, apply discounts in dialog, visa ending in 0919...
-    // 'purchase charged to employee account' for admins
-    // clear shopping list in firebase, potential 'Purchased items rcv' like categories in child rcv shopping list categories?
-
-
     public void getSubtotalAndNum(List<Item> items){
 
         subtotalText.setText("");
@@ -426,6 +423,12 @@ public class ShoppingCartFragment extends Fragment {
         }
 
 
+    public void addToAllPurchaseHistory(){
+
+        //TODO: add the details of the order needed for
+    }
+
+
     public void clearShopList(){
         userCartRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -439,6 +442,9 @@ public class ShoppingCartFragment extends Fragment {
                 Log.e(TAG, "onFailure: Cart not deleted " + e.getLocalizedMessage(), e);
             }
         });
+
+        //TODO: get user purchased items
+        startActivity(new Intent(getContext(), UserPurchaseHistoryActivity.class));
     }
 
     void retrieveItemsFromFirebase(){

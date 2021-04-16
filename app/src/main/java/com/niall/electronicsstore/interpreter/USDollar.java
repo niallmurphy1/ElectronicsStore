@@ -5,7 +5,7 @@ public class USDollar implements Expression{
 
     @Override
     public String euros(double price) {
-        return Double.toString(price * .84);
+        return Double.toString(price / 1.19);
     }
 
     @Override
@@ -20,11 +20,8 @@ public class USDollar implements Expression{
 
     @Override
     public String dollarsCAD(double price) {
-        return Double.toString(price * 1.26);
+        return Double.toString(price / .79);
     }
 
-    @Override
-    public String japaneseYen(double price) {
-        return Double.toString(price * 109.21);
-    }
+
 }

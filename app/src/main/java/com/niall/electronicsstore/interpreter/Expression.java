@@ -10,7 +10,7 @@ public interface Expression {
 
     public abstract String dollarsCAD(double price);
 
-    public abstract String japaneseYen(double price);
+
 
 
 }

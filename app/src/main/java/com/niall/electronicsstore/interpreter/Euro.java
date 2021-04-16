@@ -22,8 +22,5 @@ public class Euro implements Expression{
         return Double.toString(price * 1.50);
     }
 
-    @Override
-    public String japaneseYen(double price) {
-        return Double.toString(price * 129.81);
-    }
+
 }

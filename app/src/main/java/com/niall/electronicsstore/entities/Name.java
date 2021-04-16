@@ -7,6 +7,10 @@ public class Name {
     private String firstName;
     private String lastName;
 
+
+    public Name(){
+
+    }
     public Name(NameBuilder nameBuilder){
 
         this.firstName = nameBuilder.firstName;
@@ -55,5 +59,14 @@ public class Name {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+
+    @Override
+    public String toString() {
+        return "Name{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                '}';
     }
 }

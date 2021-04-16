@@ -24,8 +24,4 @@ public class CADDollar implements Expression{
 
     }
 
-    @Override
-    public String japaneseYen(double price) {
-        return Double.toString(price * 86.75);
-    }
 }
