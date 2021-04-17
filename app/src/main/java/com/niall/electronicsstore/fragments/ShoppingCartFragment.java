@@ -373,29 +373,6 @@ public class ShoppingCartFragment extends Fragment {
             }
 
 
-//
-//            if (userCoupon != null) {
-//
-//                if(userCoupon.discount() == 0){
-//                    dialogCouponDiscountPercentText.setText("No coupon applied");
-//                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
-//                }
-//                else {
-//                    dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount() * 100) + "%");
-//                    String cost = NumberFormatter.formatPriceEuros(subtotalCents);
-//                    double theCostInCent = ((double) subtotalCents) *(1 -userCoupon.discount());
-//                    dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros((int) theCostInCent));
-//                }
-//
-//            }
-//            else {
-//                dialogCouponDiscountPercentText.setText("No coupon applied");
-//                dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros(subtotalCents));
-//            }
-
-
-            //TODO: start previous purchased activity
-
             confirmAndPayBtn = dialogView.findViewById(R.id.confirm_pay_dialog_confirm_pay_btn);
 
             if (isAdmin) {
@@ -472,12 +449,8 @@ public class ShoppingCartFragment extends Fragment {
 
     }
 
-
-    public void addToAllPurchaseHistory() {
-
-        //TODO: add the details of the order needed for
-    }
-
+    //TODO: add purchased items to seperate arraylist with reference to userId in firebase as the key
+    // so there is a reference to each user, for admin searching all user's purchase history
 
     public void clearShopList() {
         userCartRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
