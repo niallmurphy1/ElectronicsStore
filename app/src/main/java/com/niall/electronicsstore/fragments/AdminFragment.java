@@ -62,7 +62,9 @@ public class AdminFragment extends Fragment {
     //TODO: view all purchase histories, maybe in an rcv with child rcvs, also update stock levels.
     // Give the command pattern a go here
 
-    //TODO: get all users very difficult to get all users stuff
+    // TODO: Have 2 buttons in layout: 1. View/edit stock, 2. View user orders
+
+
 
 
 

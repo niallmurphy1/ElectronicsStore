@@ -101,6 +101,8 @@ public class ChildUserPurchasedItemsAdapter extends RecyclerView.Adapter<ChildUs
             purchasedItemNameText.setText(item.getName());
             purchasedItemQuantityText.setText("Quantity: " + item.getCustQuant());
             purchasedItemPriceText.setText(NumberFormatter.formatPriceEuros(item.getPriceCents()));
+
+            //TODO: need to fix this listener, getting null pointer exception
             itemView.setOnClickListener(v -> onItemListener.onItemClick( item));
 
         }

@@ -342,9 +342,21 @@ public class ShoppingCartFragment extends Fragment {
 
             //TODO: fix this to account for no coupon added and maths with discount
             if (userCoupon != null) {
-                dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount()) + "%");
-                dialogTotalCostText.setText((int) (((double) subtotalCents) * userCoupon.discount()) + " €");
-            } else {
+
+                if(userCoupon.discount() == 0){
+                    dialogCouponDiscountPercentText.setText("No coupon applied");
+                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
+                }
+                else {
+                    dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount() * 100) + "%");
+                    String cost = NumberFormatter.formatPriceEuros(subtotalCents);
+                    double theCostInCent = ((double) subtotalCents) *(1 -userCoupon.discount());
+                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros((int) theCostInCent) + " €");
+                }
+
+            }
+            else {
+                dialogCouponDiscountPercentText.setText("No coupon applied");
                 dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
             }
 
@@ -424,22 +436,7 @@ public class ShoppingCartFragment extends Fragment {
 
                     }
                 });
-//        for (Item cartItem : cartItems)
-//                String key = userPurchasedItemsRef.push().getKey();
-//
-//
-//                assert key != null;
-//
-//                userPurchasedItemsRef.child(key).setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                    @Override
-//                    public void onSuccess(Void aVoid) {
-//                        Log.d(TAG, "onSuccess: Item added to purchased: " + cartItem.getName());
-//
-//                        clearShopList();
-//
-//                    }
-//                });
-//            }
+
     }
 
 
