@@ -16,7 +16,7 @@ public class AdminCoupon implements Coupon{
 
     @Override
     public double discount() {
-        return .10;
+        return .30;
     }
 
 

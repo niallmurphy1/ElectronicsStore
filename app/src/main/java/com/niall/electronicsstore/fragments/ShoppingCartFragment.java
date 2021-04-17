@@ -88,6 +88,7 @@ public class ShoppingCartFragment extends Fragment {
     private TextView dialogCouponDiscountPercentText;
     private TextView dialogTotalCostText;
 
+    private boolean enough = true;
 
     private boolean isAdmin;
     private EditText couponCodeEdit;
@@ -323,6 +324,8 @@ public class ShoppingCartFragment extends Fragment {
         //TODO: set up dialog, based on user isAdmin, rcv for products, total cost, txtView for coupons applied with discount, subtotal;
         // admin cost applied to 'admin account', stock taken away
 
+
+
         if (cartItems.size() < 1) {
 
             Log.d(TAG, "openCouponDialog: Cart items < 1: " + cartItems.toString());
@@ -399,20 +402,27 @@ public class ShoppingCartFragment extends Fragment {
                             itemRef.child(allItem.getId()).child("stockLevel").setValue(allItem.getStockLevel() - cartItem.getCustQuant());
                         } else if (allItem.getStockLevel() == 0 || cartItem.getCustQuant() > allItem.getStockLevel()) {
                             Toast.makeText(getActivity(), "Cannot complete payment, not enough items in stock!", Toast.LENGTH_SHORT).show();
+                            enough = false;
                         }
                     }
                 }
 
-                if (isAdmin) {
-                    alertDialog.dismiss();
-                    Toast.makeText(getActivity(), "Payment complete on work account", Toast.LENGTH_SHORT).show();
 
-                } else {
-                    alertDialog.dismiss();
-                    Toast.makeText(getActivity(), "Payment completed with Visa ending: " + getCardDigits(userCardNo), Toast.LENGTH_SHORT).show();
+                if(!enough) {
 
+                    if (isAdmin) {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), "Payment complete on work account", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        alertDialog.dismiss();
+                        Toast.makeText(getActivity(), "Payment completed with Visa ending: " + getCardDigits(userCardNo), Toast.LENGTH_SHORT).show();
+
+                    }
+                    addToPurchasedItems();
+                }else{
+                    Snackbar.make(getView(), "Sorry, but we are out of stock of an item in your order", Snackbar.LENGTH_SHORT).show();
                 }
-                addToPurchasedItems();
 
             });
         }
