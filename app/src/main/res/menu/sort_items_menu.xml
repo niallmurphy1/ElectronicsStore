@@ -4,6 +4,11 @@
 
 
     <item
+        android:id="@+id/purchase_history_menu_option"
+        android:title="Purchase History"
+        android:icon="@drawable/ic_purchase_history"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/sort_by_name_AZ"
         android:title="@string/sort_a_z"
         app:showAsAction="never" />

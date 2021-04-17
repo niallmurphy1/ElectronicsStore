@@ -39,8 +39,11 @@ import com.niall.electronicsstore.decorator.TenPercent;
 import com.niall.electronicsstore.decorator.TwentyPercent;
 import com.niall.electronicsstore.decorator.UserCoupon;
 import com.niall.electronicsstore.entities.Item;
+import com.niall.electronicsstore.entities.PurchaseHistory;
 import com.niall.electronicsstore.util.NumberFormatter;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -161,11 +164,10 @@ public class ShoppingCartFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
 
-                if(snapshot.getValue() != null){
-                    Log.d(TAG, "onDataChange: great success " + snapshot.getValue() );
+                if (snapshot.getValue() != null) {
+                    Log.d(TAG, "onDataChange: great success " + snapshot.getValue());
                     isAdmin = true;
-                }
-                else{
+                } else {
                     Log.d(TAG, "onDataChange: User is an admin" + snapshot.getValue());
                     isAdmin = false;
                 }
@@ -184,11 +186,10 @@ public class ShoppingCartFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
 
-                if(snapshot.getValue() != null){
-                    Log.d(TAG, "onDataChange: great success, user card " + snapshot.getValue() );
+                if (snapshot.getValue() != null) {
+                    Log.d(TAG, "onDataChange: great success, user card " + snapshot.getValue());
                     userCardNo = snapshot.getValue(String.class);
-                }
-                else{
+                } else {
                     Log.d(TAG, "onDataChange: User is an admin, no card in database: " + snapshot.getValue());
 
                 }
@@ -203,21 +204,20 @@ public class ShoppingCartFragment extends Fragment {
     }
 
 
-    public String getCardDigits(String cardNo){
+    public String getCardDigits(String cardNo) {
 
         //Called if user is not admin
         return cardNo.substring(cardNo.length() - 4);
     }
+
     private void openCouponDialog() {
 
 
-        if(cartItems.size() < 1){
+        if (cartItems.size() < 1) {
 
             Log.d(TAG, "openCouponDialog: Cart items < 1: " + cartItems.toString());
             Snackbar.make(Objects.requireNonNull(getView()), "You have no items in your cart, browse the catalogue to add items!", Snackbar.LENGTH_LONG).show();
-        }
-
-        else {
+        } else {
             userCoupon = new UserCoupon();
 
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
@@ -266,10 +266,10 @@ public class ShoppingCartFragment extends Fragment {
 
             });
 
-            builder.setNegativeButton("Dismiss",  (dialog, which) -> {
+            builder.setNegativeButton("Dismiss", (dialog, which) -> {
 
                 dialog.dismiss();
-                    });
+            });
 
             AlertDialog alertDialog = builder.create();
 
@@ -298,7 +298,7 @@ public class ShoppingCartFragment extends Fragment {
         }
     }
 
-    public void getSubtotalAndNum(List<Item> items){
+    public void getSubtotalAndNum(List<Item> items) {
 
         subtotalText.setText("");
 
@@ -310,12 +310,10 @@ public class ShoppingCartFragment extends Fragment {
             subtotalCents += item.getPriceCents() * item.getCustQuant();
             numItems += item.getCustQuant();
         }
-        subtotalText.setText("Subtotal: " +NumberFormatter.formatPriceEuros(subtotalCents));
+        subtotalText.setText("Subtotal: " + NumberFormatter.formatPriceEuros(subtotalCents));
 
         numItemsText.setText("Total items(s): " + numItems);
     }
-
-
 
 
     private void confirmAndPay() {
@@ -323,11 +321,11 @@ public class ShoppingCartFragment extends Fragment {
         //TODO: set up dialog, based on user isAdmin, rcv for products, total cost, txtView for coupons applied with discount, subtotal;
         // admin cost applied to 'admin account', stock taken away
 
-        if(cartItems.size() < 1){
+        if (cartItems.size() < 1) {
 
             Log.d(TAG, "openCouponDialog: Cart items < 1: " + cartItems.toString());
             Snackbar.make(Objects.requireNonNull(getView()), "You have no items in your cart, browse the catalogue to add items!", Snackbar.LENGTH_LONG).show();
-        }else {
+        } else {
             // do everything
 
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
@@ -343,11 +341,10 @@ public class ShoppingCartFragment extends Fragment {
             dialogSubtotalText.setText("Subtotal: " + NumberFormatter.formatPriceEuros(subtotalCents));
 
             //TODO: fix this to account for no coupon added and maths with discount
-            if(userCoupon != null) {
+            if (userCoupon != null) {
                 dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount()) + "%");
-                dialogTotalCostText.setText((int) (((double) subtotalCents) * userCoupon.discount())+ " €");
-            }
-            else{
+                dialogTotalCostText.setText((int) (((double) subtotalCents) * userCoupon.discount()) + " €");
+            } else {
                 dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
             }
 
@@ -356,14 +353,13 @@ public class ShoppingCartFragment extends Fragment {
 
             confirmAndPayBtn = dialogView.findViewById(R.id.confirm_pay_dialog_confirm_pay_btn);
 
-            if(isAdmin){
+            if (isAdmin) {
                 confirmAndPayBtn.setText("Pay as admin");
-            }
-            else{
+            } else {
                 confirmAndPayBtn.setText(String.format("Pay with card ending %s", getCardDigits(userCardNo)));
             }
             builder.setTitle("Confirm and Pay");
-            builder.setNegativeButton("Dismiss",  (dialog, which) -> {
+            builder.setNegativeButton("Dismiss", (dialog, which) -> {
 
                 dialog.dismiss();
             });
@@ -374,29 +370,27 @@ public class ShoppingCartFragment extends Fragment {
 
             confirmAndPayBtn.setOnClickListener(v -> {
 
-                    for (Item allItem : allItems) {
+                for (Item allItem : allItems) {
 
-                        for (Item cartItem : cartItems) {
-                            if (allItem.getName().equals(cartItem.getName())) {
-                                itemRef.child(allItem.getId()).child("stockLevel").setValue(allItem.getStockLevel() - cartItem.getCustQuant());
-                            }
-                            else if(allItem.getStockLevel() == 0 || cartItem.getCustQuant() > allItem.getStockLevel()){
-                                Toast.makeText(getActivity(), "Cannot complete payment, not enough items in stock!", Toast.LENGTH_SHORT).show();
-                            }
+                    for (Item cartItem : cartItems) {
+                        if (allItem.getName().equals(cartItem.getName())) {
+                            itemRef.child(allItem.getId()).child("stockLevel").setValue(allItem.getStockLevel() - cartItem.getCustQuant());
+                        } else if (allItem.getStockLevel() == 0 || cartItem.getCustQuant() > allItem.getStockLevel()) {
+                            Toast.makeText(getActivity(), "Cannot complete payment, not enough items in stock!", Toast.LENGTH_SHORT).show();
                         }
                     }
+                }
 
-                    if(isAdmin){
-                        alertDialog.dismiss();
-                        Toast.makeText(getActivity(), "Payment complete on work account", Toast.LENGTH_SHORT).show();
+                if (isAdmin) {
+                    alertDialog.dismiss();
+                    Toast.makeText(getActivity(), "Payment complete on work account", Toast.LENGTH_SHORT).show();
 
-                    }
-                    else{
-                        alertDialog.dismiss();
-                        Toast.makeText(getActivity(), "Payment completed with Visa ending: " + getCardDigits(userCardNo), Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDialog.dismiss();
+                    Toast.makeText(getActivity(), "Payment completed with Visa ending: " + getCardDigits(userCardNo), Toast.LENGTH_SHORT).show();
 
-                    }
-                    addToPurchasedItems();
+                }
+                addToPurchasedItems();
 
             });
         }
@@ -404,32 +398,58 @@ public class ShoppingCartFragment extends Fragment {
 
     public void addToPurchasedItems() {
 
-        for (Item cartItem : cartItems) {
+        PurchaseHistory purchaseHistory = new PurchaseHistory();
+        String datePurchased;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate purchaseDate = LocalDate.now();
+        datePurchased = dtf.format(purchaseDate);
 
-                String key = userPurchasedItemsRef.push().getKey();
+        purchaseHistory.setDatePurchased(datePurchased);
+        purchaseHistory.setItemsPurchased(cartItems);
 
-                assert key != null;
 
-                userPurchasedItemsRef.child(key).setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
+        String key = userPurchasedItemsRef.push().getKey();
+
+        userPurchasedItemsRef.child(key).setValue(purchaseHistory).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Log.d(TAG, "onSuccess: Item added to purchased, PurchaseHistory successfull: " + purchaseHistory.toString());
+                clearShopList();
+            }
+        })
+                .addOnFailureListener(new OnFailureListener() {
                     @Override
-                    public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: Item added to purchased: " + cartItem.getName());
-
-                        clearShopList();
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, "onFailure: PurchaseHistory failed " + e.getLocalizedMessage(), e );
 
                     }
                 });
-            }
-        }
+//        for (Item cartItem : cartItems)
+//                String key = userPurchasedItemsRef.push().getKey();
+//
+//
+//                assert key != null;
+//
+//                userPurchasedItemsRef.child(key).setValue(cartItem).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        Log.d(TAG, "onSuccess: Item added to purchased: " + cartItem.getName());
+//
+//                        clearShopList();
+//
+//                    }
+//                });
+//            }
+    }
 
 
-    public void addToAllPurchaseHistory(){
+    public void addToAllPurchaseHistory() {
 
         //TODO: add the details of the order needed for
     }
 
 
-    public void clearShopList(){
+    public void clearShopList() {
         userCartRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -447,16 +467,16 @@ public class ShoppingCartFragment extends Fragment {
         startActivity(new Intent(getContext(), UserPurchaseHistoryActivity.class));
     }
 
-    void retrieveItemsFromFirebase(){
+    void retrieveItemsFromFirebase() {
 
-       allItems.clear();
+        allItems.clear();
 
         itemRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
 
-                for(DataSnapshot keyNode: snapshot.getChildren()){
+                for (DataSnapshot keyNode : snapshot.getChildren()) {
 
                     Item item = keyNode.getValue(Item.class);
                     assert item != null;
@@ -472,7 +492,7 @@ public class ShoppingCartFragment extends Fragment {
         });
     }
 
-    public void retrieveCartFromFirebase(){
+    public void retrieveCartFromFirebase() {
 
         userCartRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -480,7 +500,7 @@ public class ShoppingCartFragment extends Fragment {
 
                 cartItems.clear();
 
-                for(DataSnapshot keyNode: snapshot.getChildren()){
+                for (DataSnapshot keyNode : snapshot.getChildren()) {
 
                     Item item = keyNode.getValue(Item.class);
                     assert item != null;
@@ -502,10 +522,10 @@ public class ShoppingCartFragment extends Fragment {
         });
     }
 
-    public void setUpRCV(){
-            recyclerView = getView().findViewById(R.id.shop_cart_rcv);
-            adapter = new ShopCartItemAdapter(getContext());
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-            recyclerView.setAdapter(adapter);
+    public void setUpRCV() {
+        recyclerView = getView().findViewById(R.id.shop_cart_rcv);
+        adapter = new ShopCartItemAdapter(getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 }

@@ -38,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.niall.electronicsstore.R;
 import com.niall.electronicsstore.activities.RegLogActivity;
+import com.niall.electronicsstore.activities.UserPurchaseHistoryActivity;
 import com.niall.electronicsstore.adapters.CatalogueItemAdapter;
 import com.niall.electronicsstore.entities.Item;
 import com.niall.electronicsstore.interpreter.Euro;
@@ -47,6 +48,9 @@ import com.squareup.picasso.Picasso;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -107,6 +111,12 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
         userCartRef = FirebaseDatabase.getInstance().getReference("User").child(userId).child("userShopCart");
         retrieveCartFromFirebase();
 
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate localDate = LocalDate.now();
+        Log.d(TAG, String.format("onCreate: today's date: " + dtf.format(localDate)));
+
+
     }
 
     @Override
@@ -127,6 +137,10 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
+
+            case R.id.purchase_history_menu_option:
+                startActivity(new Intent(getContext(), UserPurchaseHistoryActivity.class));
+                break;
 
             case R.id.sort_by_name_AZ:
                 Collections.sort(items, Item.itemComparatorAZName);
@@ -275,7 +289,6 @@ public class CatalogueFragment extends Fragment implements CatalogueItemAdapter.
 
                 double priceCentsPounds = Double.parseDouble(converter.pounds(getPriceCents(priceText.getText().toString())));
 
-                //TODO: change this to a variable, don't want to write to firebase with different currencies, all based in euro
                 //item.setPriceCents((int) priceCentsPounds);
 
                 double priceWholePounds = (priceCentsPounds / 100.00);

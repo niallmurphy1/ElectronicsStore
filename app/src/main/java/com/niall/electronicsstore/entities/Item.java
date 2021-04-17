@@ -1,10 +1,6 @@
 package com.niall.electronicsstore.entities;
 
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Item {
 
@@ -15,11 +11,10 @@ public class Item {
     private String category;
     private String image;
     private double rating;
-    private ArrayList<String> reviews;
     private int stockLevel;
     private String description;
     private int custQuant;
-    private Date datePurchased;
+    private RatingReview ratingReview;
 
 
     public Item(){
@@ -65,12 +60,13 @@ public class Item {
       };
 
 
-    public Date getDatePurchased() {
-        return datePurchased;
+
+    public RatingReview getRatingReview() {
+        return ratingReview;
     }
 
-    public void setDatePurchased(Date datePurchased) {
-        this.datePurchased = datePurchased;
+    public void setRatingReview(RatingReview ratingReview) {
+        this.ratingReview = ratingReview;
     }
 
     public Item(String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant){
@@ -84,7 +80,8 @@ public class Item {
         this.custQuant = custQuant;
     }
 
-    public Item(String id, String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant, double rating, Date datePurchased){
+
+    public Item(String id, String name, String manufacturer, int priceCents, String category, String image, String description, int stockLevel, int custQuant, RatingReview ratingReview){
         this.id =id;
         this.name = name;
         this.manufacturer = manufacturer;
@@ -94,8 +91,9 @@ public class Item {
         this.description = description;
         this.stockLevel = stockLevel;
         this.custQuant = custQuant;
-        this.rating = rating;
-        this.datePurchased = datePurchased;
+        this.ratingReview = ratingReview;
+
+
     }
 
 
@@ -109,13 +107,7 @@ public class Item {
         this.rating = rating;
     }
 
-    public ArrayList<String> getReviews() {
-        return reviews;
-    }
 
-    public void setReviews(ArrayList<String> reviews) {
-        this.reviews = reviews;
-    }
 
     public String getId() {
         return id;
@@ -190,20 +182,20 @@ public class Item {
     }
 
 
-
     @Override
     public String toString() {
         return "Item{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", manufacturer='" + manufacturer + '\'' +
-                ", price=" + priceCents +
+                ", priceCents=" + priceCents +
                 ", category='" + category + '\'' +
                 ", image='" + image + '\'' +
                 ", rating=" + rating +
-                ", reviews=" + reviews +
                 ", stockLevel=" + stockLevel +
+                ", description='" + description + '\'' +
                 ", custQuant=" + custQuant +
+                ", ratingObject=" + ratingReview +
                 '}';
     }
 }

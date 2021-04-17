@@ -38,7 +38,6 @@ public class CatalogueItemAdapter extends RecyclerView.Adapter<CatalogueItemAdap
     }
 
 
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

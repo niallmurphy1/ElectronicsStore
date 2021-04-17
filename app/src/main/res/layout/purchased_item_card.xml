@@ -21,7 +21,7 @@
             android:background="@color/black">
 
             <ImageView
-                android:id="@+id/shop_cart_rcv_product_image"
+                android:id="@+id/purchased_item_child_rcv_item_image"
                 android:layout_width="130dp"
                 android:layout_height="130dp"
                 android:src="@drawable/cpu_icon"
@@ -30,7 +30,7 @@
                 app:layout_constraintTop_toTopOf="parent"/>
 
             <TextView
-                android:id="@+id/shop_cart_rcv_title_text_field"
+                android:id="@+id/purchased_item_child_rcv_item_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
@@ -39,24 +39,24 @@
                 android:textStyle="bold"
                 android:text="This is the product name text field and the\n title of the product will appear here "
                 android:textColor="@color/white"
-                app:layout_constraintStart_toEndOf="@id/shop_cart_rcv_product_image"
+                app:layout_constraintStart_toEndOf="@id/purchased_item_child_rcv_item_image"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/shop_cart_rcv_item_price"
+                android:id="@+id/purchased_item_child_rcv_item_price"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
                 android:paddingBottom="15dp"
-                app:layout_constraintStart_toEndOf="@id/shop_cart_rcv_product_image"
+                app:layout_constraintStart_toEndOf="@id/purchased_item_child_rcv_item_image"
                 app:layout_constraintBottom_toBottomOf="parent"
                 android:textColor="@color/appBlue"
                 android:textStyle="bold"
                 android:text="£6.99"/>
 
             <TextView
-                android:id="@+id/quant_item_purchased_text_view"
+                android:id="@+id/purchased_item_child_rcv_item_quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"

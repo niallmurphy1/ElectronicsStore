@@ -14,6 +14,7 @@ public class User {
     private boolean isAdmin;
     private ArrayList<Item> userShopCart;
     private ArrayList<Item> userPurchasedItems;
+    private ArrayList<PurchaseHistory> userPurchaseHistory;
 
     public User(){
 
@@ -30,7 +31,6 @@ public class User {
         this.adminDetails = userBuilder.adminDetails;
         this.isAdmin = userBuilder.isAdmin;
         this.userShopCart = userBuilder.userShopCart;
-        this.userPurchasedItems = userBuilder.userPurchasedItems;
     }
 
     public static class UserBuilder {
