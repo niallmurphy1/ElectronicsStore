@@ -69,6 +69,7 @@ public class ShoppingCartFragment extends Fragment {
     private NumberFormatter formatter;
 
     private Coupon userCoupon;
+    private Coupon adminCoupon;
 
     //Firebase variables
     private DatabaseReference itemRef;
@@ -219,7 +220,7 @@ public class ShoppingCartFragment extends Fragment {
             Snackbar.make(Objects.requireNonNull(getView()), "You have no items in your cart, browse the catalogue to add items!", Snackbar.LENGTH_LONG).show();
         } else {
             userCoupon = new UserCoupon();
-
+             adminCoupon = new AdminCoupon();
             MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()));
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_coupon_code, null);
             builder.setView(dialogView);
@@ -286,9 +287,10 @@ public class ShoppingCartFragment extends Fragment {
 
                     //Create AdminCoupon object
                     //apply discount to textview
-                    Coupon coupon = new AdminCoupon();
+                     //coupon = new AdminCoupon();
 
-                    Snackbar.make(Objects.requireNonNull(getView()), "Admin coupon applied: " + coupon.discount() * 100 + "% off", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.appBlue)).show();
+
+                    Snackbar.make(Objects.requireNonNull(getView()), "Admin coupon applied: " + adminCoupon.discount() * 100 + "% off", Snackbar.LENGTH_LONG).setBackgroundTint(getResources().getColor(R.color.appBlue)).show();
 
                 } else {
                     Snackbar.make(Objects.requireNonNull(getView()), "You are not an admin", Snackbar.LENGTH_LONG).show();
@@ -340,25 +342,56 @@ public class ShoppingCartFragment extends Fragment {
             dialogTotalItemsText.setText("No. of item(s): " + cartItems.size());
             dialogSubtotalText.setText("Subtotal: " + NumberFormatter.formatPriceEuros(subtotalCents));
 
-            //TODO: fix this to account for no coupon added and maths with discount
-            if (userCoupon != null) {
+            if (adminCoupon != null) {
 
-                if(userCoupon.discount() == 0){
-                    dialogCouponDiscountPercentText.setText("No coupon applied");
-                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
-                }
-                else {
-                    dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount() * 100) + "%");
-                    String cost = NumberFormatter.formatPriceEuros(subtotalCents);
-                    double theCostInCent = ((double) subtotalCents) *(1 -userCoupon.discount());
-                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros((int) theCostInCent) + " €");
-                }
+                    dialogCouponDiscountPercentText.setText(String.valueOf(adminCoupon.discount() * 100) + "%");
+                    double theCostInCent = ((double) subtotalCents) *(1 -adminCoupon.discount());
+                    dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros((int) theCostInCent));
+
 
             }
             else {
-                dialogCouponDiscountPercentText.setText("No coupon applied");
-                dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
+                if (userCoupon != null) {
+
+                    if(userCoupon.discount() == 0){
+                        dialogCouponDiscountPercentText.setText("No coupon applied");
+                        dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
+                    }
+                    else {
+                        dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount() * 100) + "%");
+                        String cost = NumberFormatter.formatPriceEuros(subtotalCents);
+                        double theCostInCent = ((double) subtotalCents) *(1 -userCoupon.discount());
+                        dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros((int) theCostInCent));
+                    }
+
+                }
+                else {
+                    dialogCouponDiscountPercentText.setText("No coupon applied");
+                    dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros(subtotalCents));
+                }
+
             }
+
+
+//
+//            if (userCoupon != null) {
+//
+//                if(userCoupon.discount() == 0){
+//                    dialogCouponDiscountPercentText.setText("No coupon applied");
+//                    dialogTotalCostText.setText(NumberFormatter.formatPriceEuros(subtotalCents));
+//                }
+//                else {
+//                    dialogCouponDiscountPercentText.setText(String.valueOf(userCoupon.discount() * 100) + "%");
+//                    String cost = NumberFormatter.formatPriceEuros(subtotalCents);
+//                    double theCostInCent = ((double) subtotalCents) *(1 -userCoupon.discount());
+//                    dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros((int) theCostInCent));
+//                }
+//
+//            }
+//            else {
+//                dialogCouponDiscountPercentText.setText("No coupon applied");
+//                dialogTotalCostText.setText("€" + NumberFormatter.formatPriceEuros(subtotalCents));
+//            }
 
 
             //TODO: start previous purchased activity

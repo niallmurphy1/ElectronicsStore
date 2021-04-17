@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -94,66 +95,95 @@ public class RegisterUserActivity extends AppCompatActivity {
         return emailEdit.getText().toString();
     }
 
+
+    private boolean cardDetails() {
+
+        return !nameOnCardEdit.getText().toString().isEmpty()
+                && !cardNumberEdit.getText().toString().isEmpty()
+                && !securityCodeEdit.getText().toString().isEmpty()
+                && !expirationYearEdit.getText().toString().isEmpty()
+                && !expirationMonthEdit.getText().toString().isEmpty();
+    }
+
+    private boolean addressDetails(){
+
+        if(addressLine1Edit.getText().toString().isEmpty()
+                || addressLine2Edit.getText().toString().isEmpty()
+                || zipEdit.getText().toString().isEmpty()
+                || cityEdit.getText().toString().isEmpty()
+                || countryEdit.getText().toString().isEmpty()) return false;
+
+        else return true;
+    }
+
     public void onRegisterClick(View view) {
 
 
-        mainAuth.createUserWithEmailAndPassword(getEmailInput(), getPasswordInput())
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d("TAG", "createUserWithEmail:success");
-                            Toast.makeText(RegisterUserActivity.this, "Registration successful.",
-                                    Toast.LENGTH_SHORT).show();
-                            FirebaseUser user = mainAuth.getCurrentUser();
-                            String userId = user.getUid();
+        if (getEmailInput().isEmpty() || getPasswordInput().isEmpty()|| !cardDetails() || !addressDetails()) {
 
-                            Name newName = new Name.NameBuilder(firstNameEdit.getText().toString()
-                                    , lastNameEdit.getText().toString())
-                                    .build();
+            Snackbar.make(findViewById(R.id.scroll_view_register_admin), "You must enter all fields", Snackbar.LENGTH_SHORT).show();
+
+        } else {
 
 
+            mainAuth.createUserWithEmailAndPassword(getEmailInput(), getPasswordInput())
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // Sign in success, update UI with the signed-in user's information
+                                Log.d("TAG", "createUserWithEmail:success");
+                                Toast.makeText(RegisterUserActivity.this, "Registration successful.",
+                                        Toast.LENGTH_SHORT).show();
+                                FirebaseUser user = mainAuth.getCurrentUser();
+                                String userId = user.getUid();
 
-                            User aUser = new User.UserBuilder(emailEdit.getText().toString(), newName, false)
-                                    .address(new Address.AddressBuilder(addressLine1Edit.getText().toString()
-                                            , addressLine2Edit.getText().toString()
-                                            , zipEdit.getText().toString()
-                                            , cityEdit.getText().toString()
-                                            , countryEdit.getText().toString())
-                                            .build()).paymentMethod(new PaymentMethod.PaymentMethodBuilder(nameOnCardEdit.getText().toString()
-                                            , cardNumberEdit.getText().toString()
-                                            , securityCodeEdit.getText().toString()
-                                            , Integer.parseInt(expirationMonthEdit.getText().toString())
-                                            , Integer.parseInt(expirationYearEdit.getText().toString())).build()).build();
-
-
-                            String name = user.getDisplayName();
-
-                            System.out.println(name);
-
-                            DatabaseReference db = FirebaseDatabase.getInstance().getReference();
-                            db.child("User").child(userId).setValue(aUser).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(RegisterUserActivity.this, "Write successful", Toast.LENGTH_LONG).show();
-
-                                    //startDashboard Activity
-
-                                    startActivity(dashIntent);
-                                }
-                            });
+                                Name newName = new Name.NameBuilder(firstNameEdit.getText().toString()
+                                        , lastNameEdit.getText().toString())
+                                        .build();
 
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w("TAG", "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegisterUserActivity.this, "Register failed.",
-                                    Toast.LENGTH_SHORT).show();
+                                User aUser = new User.UserBuilder(emailEdit.getText().toString(), newName, false)
+                                        .address(new Address.AddressBuilder(addressLine1Edit.getText().toString()
+                                                , addressLine2Edit.getText().toString()
+                                                , zipEdit.getText().toString()
+                                                , cityEdit.getText().toString()
+                                                , countryEdit.getText().toString())
+                                                .build()).paymentMethod(new PaymentMethod.PaymentMethodBuilder(nameOnCardEdit.getText().toString()
+                                                , cardNumberEdit.getText().toString()
+                                                , securityCodeEdit.getText().toString()
+                                                , Integer.parseInt(expirationMonthEdit.getText().toString())
+                                                , Integer.parseInt(expirationYearEdit.getText().toString())).build()).build();
+
+
+                                String name = user.getDisplayName();
+
+                                System.out.println(name);
+
+                                DatabaseReference db = FirebaseDatabase.getInstance().getReference();
+                                db.child("User").child(userId).setValue(aUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(RegisterUserActivity.this, "Write successful", Toast.LENGTH_LONG).show();
+
+                                        //startDashboard Activity
+
+                                        startActivity(dashIntent);
+                                    }
+                                });
+
+
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Log.w("TAG", "createUserWithEmail:failure", task.getException());
+                                Toast.makeText(RegisterUserActivity.this, "Register failed.",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            //...
                         }
+                    });
 
-                        //...
-                    }
-                });
+        }
     }
 }
