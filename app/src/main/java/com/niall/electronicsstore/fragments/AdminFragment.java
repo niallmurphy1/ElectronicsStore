@@ -1,5 +1,6 @@
 package com.niall.electronicsstore.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +11,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,7 +24,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.GenericTypeIndicator;
 import com.google.firebase.database.ValueEventListener;
 import com.niall.electronicsstore.R;
+import com.niall.electronicsstore.activities.AllUserPurchaseHistoryActivity;
+import com.niall.electronicsstore.activities.EditStockActivity;
+import com.niall.electronicsstore.activities.UserPurchaseHistoryActivity;
 import com.niall.electronicsstore.entities.Item;
+import com.niall.electronicsstore.entities.PurchaseHistory;
 import com.niall.electronicsstore.entities.User;
 
 import java.util.ArrayList;
@@ -35,6 +44,14 @@ public class AdminFragment extends Fragment {
     private DatabaseReference userRef;
     private ArrayList<User> allUsers;
 
+    private Button userPurchasesBtn;
+    private Button editStockButton;
+
+    private FirebaseAuth mainAuth;
+    private boolean isAdmin;
+
+    private String userId;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -42,8 +59,13 @@ public class AdminFragment extends Fragment {
 
         userRef = FirebaseDatabase.getInstance().getReference("User");
 
+        mainAuth = FirebaseAuth.getInstance();
+        userId = mainAuth.getUid();
+
         allUsers = new ArrayList<>();
-        getAllUsersPurchaseHistory();
+
+        getUser();
+        // getAllUsersPurchaseHistory();
 
     }
 
@@ -57,79 +79,63 @@ public class AdminFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-    }
 
-    //TODO: view all purchase histories, maybe in an rcv with child rcvs, also update stock levels.
-    // Give the command pattern a go here
-
-    // TODO: Have 2 buttons in layout: 1. View/edit stock, 2. View user orders
+        userPurchasesBtn = getView().findViewById(R.id.admin_frag_view_user_purchases_btn);
+        editStockButton = getView().findViewById(R.id.admin_frag_edit_stock_btn);
 
 
-
-
-
-    public void getAllUsersPurchaseHistory(){
-
-        ArrayList<String> userIds = new ArrayList<>();
-        allUsers.clear();
-
-        userRef.addValueEventListener(new ValueEventListener() {
+        userPurchasesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onClick(View v) {
+                if (isAdmin) {
+                    startActivity(new Intent(getContext(), AllUserPurchaseHistoryActivity.class));
+                } else {
 
-                for(DataSnapshot keyNode: snapshot.getChildren()){
-
-                    String userId = keyNode.getKey();
-
-                    userIds.add(userId);
-//                    assert user != null;
-//                    user.setUserId(userId);
-//                    allUsers.add(user);
+                    Snackbar.make(getView(), "Access denied, You are not an admin!", Snackbar.LENGTH_SHORT).show();
                 }
-                Log.d(TAG, "onDataChange: user IDs: " + userIds.toString());
 
 
-                getUserPurchases(userIds);
             }
+        });
 
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+        editStockButton.setOnClickListener(v -> {
+            if (isAdmin) {
+                startActivity(new Intent(getContext(), EditStockActivity.class));
+            } else {
+                Snackbar.make(getView(), "Access denied, You are not an admin!", Snackbar.LENGTH_SHORT).show();
 
             }
         });
     }
 
-    public void getUserPurchases(ArrayList<String> userIds){
 
-        ArrayList<Item> purchasedItems = new ArrayList<>();
+    public void getUser() {
 
-        for(String uId: userIds){
+        Log.d(TAG, "getUser: " + userRef.child(userId).child("adminDetails").child("employeeID").toString());
 
-            userRef.child(uId).addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                   // User aUser = snapshot.getValue(User.class);
-                   String email = snapshot.child("email").getValue(String.class);
+        userRef.child(userId).child("adminDetails").child("employeeID").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
 
-                    //Item item = snapshot.child("userPurchasedItems").getChildren();
-//                   purchasedItems.add(item);
-
-
-
-                   // Log.d(TAG, "onDataChange: Please work, the user: " + aUser.toString());
-                    Log.d(TAG, "onDataChange: Purchased items: " + purchasedItems.toString());
-                    Log.d(TAG, "onDataChange: Please work, the user: " + email.toString());
+                if (snapshot.getValue() != null) {
+                    Log.d(TAG, "onDataChange: great success " + snapshot.getValue());
+                    isAdmin = true;
+                } else {
+                    Log.d(TAG, "onDataChange: User is an admin" + snapshot.getValue());
+                    isAdmin = false;
                 }
+            }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
 
-                }
-            });
-        }
+                Log.e(TAG, "onCancelled: error in database: " + error);
+            }
+        });
+
+
 
     }
+
 }

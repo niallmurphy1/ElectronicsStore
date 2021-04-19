@@ -23,7 +23,6 @@ public class User {
 
 
     private User(UserBuilder userBuilder) {
-        this.userId = userBuilder.userId;
         this.email = userBuilder.email;
         this.paymentMethod = userBuilder.paymentMethod;
         this.name = userBuilder.name;
@@ -35,7 +34,6 @@ public class User {
 
     public static class UserBuilder {
 
-        private String userId;
         private String email;
         private PaymentMethod paymentMethod;
         private Name name;
@@ -53,12 +51,6 @@ public class User {
 
         public UserBuilder email(final String email) {
             this.email = email;
-            return this;
-        }
-
-
-        public UserBuilder userId(final String userId) {
-            this.email = userId;
             return this;
         }
 

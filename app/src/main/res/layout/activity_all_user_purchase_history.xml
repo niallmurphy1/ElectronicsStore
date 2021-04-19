@@ -4,14 +4,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.UserPurchaseHistoryActivity"
-    android:id="@+id/root"
->
+    tools:context=".activities.AllUserPurchaseHistoryActivity">
+
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_user_purchased_items_rcv"
+        android:id="@+id/all_user_purchases_rcv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+       />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

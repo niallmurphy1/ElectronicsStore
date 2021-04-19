@@ -10,7 +10,6 @@ public class Item {
     private int priceCents;
     private String category;
     private String image;
-    private double rating;
     private int stockLevel;
     private String description;
     private int custQuant;
@@ -97,18 +96,6 @@ public class Item {
     }
 
 
-
-
-    public double getRating() {
-        return rating;
-    }
-
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
-
-
-
     public String getId() {
         return id;
     }
@@ -191,7 +178,6 @@ public class Item {
                 ", priceCents=" + priceCents +
                 ", category='" + category + '\'' +
                 ", image='" + image + '\'' +
-                ", rating=" + rating +
                 ", stockLevel=" + stockLevel +
                 ", description='" + description + '\'' +
                 ", custQuant=" + custQuant +

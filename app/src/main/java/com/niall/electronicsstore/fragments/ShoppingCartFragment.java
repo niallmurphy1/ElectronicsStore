@@ -40,6 +40,7 @@ import com.niall.electronicsstore.decorator.TwentyPercent;
 import com.niall.electronicsstore.decorator.UserCoupon;
 import com.niall.electronicsstore.entities.Item;
 import com.niall.electronicsstore.entities.PurchaseHistory;
+import com.niall.electronicsstore.singleton.CouponManager;
 import com.niall.electronicsstore.util.NumberFormatter;
 
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class ShoppingCartFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private ShopCartItemAdapter adapter;
-    private List<Item> cartItems = new ArrayList<>();
+    private ArrayList<Item> cartItems = new ArrayList<>();
     private List<Item> allItems = new ArrayList<>();
 
     private Button adminDiscountBtn;
@@ -68,8 +69,8 @@ public class ShoppingCartFragment extends Fragment {
     private int subtotalCents = 0;
     private NumberFormatter formatter;
 
-    private Coupon userCoupon;
-    private Coupon adminCoupon;
+    private Coupon userCoupon = CouponManager.getInstance().getUserCoupon();
+    private Coupon adminCoupon = CouponManager.getInstance().getAdminCoupon();
 
     //Firebase variables
     private DatabaseReference itemRef;
@@ -263,6 +264,9 @@ public class ShoppingCartFragment extends Fragment {
 
                 }
 
+                CouponManager.getInstance().setUserCoupon(userCoupon);
+                CouponManager.getInstance().setAdminCoupon(adminCoupon);
+
                 //subtotalCents = subtotalCents - (int) (subtotalCents * (userCoupon.discount()));
                 Log.d(TAG, "openCouponDialog: subtotalCents value: " + subtotalCents);
 
@@ -408,7 +412,7 @@ public class ShoppingCartFragment extends Fragment {
                 }
 
 
-                if(!enough) {
+                if(enough) {
 
                     if (isAdmin) {
                         alertDialog.dismiss();
@@ -466,7 +470,7 @@ public class ShoppingCartFragment extends Fragment {
         userCartRef.removeValue().addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                Log.d(TAG, "onSuccess: User cart cuccessfully deleted");
+                Log.d(TAG, "onSuccess: User cart successfully deleted");
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -4,11 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.UserPurchaseHistoryActivity"
-    android:id="@+id/root"
->
+    tools:context=".activities.EditStockActivity">
+
+
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_user_purchased_items_rcv"
+        android:id="@+id/edit_stock_rcv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"

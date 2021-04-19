@@ -1,26 +1,33 @@
 package com.niall.electronicsstore.entities;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class PurchaseHistory {
 
 
+    private String userPurchaseName;
     private String datePurchased;
-    private List itemsPurchased;
+    private ArrayList<Item> itemsPurchased;
 
 
     public PurchaseHistory(){
 
     }
 
-    public PurchaseHistory(String datePurchased, List<Item> itemsPurchased) {
+    public PurchaseHistory(String datePurchased, ArrayList<Item> itemsPurchased) {
         this.datePurchased = datePurchased;
         this.itemsPurchased = itemsPurchased;
     }
 
-    public List getItemsPurchased() {
+    public String getUserPurchaseName() {
+        return userPurchaseName;
+    }
+
+    public void setUserPurchaseName(String userPurchaseName) {
+        this.userPurchaseName = userPurchaseName;
+    }
+
+    public ArrayList<Item> getItemsPurchased() {
         return itemsPurchased;
     }
 
@@ -32,7 +39,7 @@ public class PurchaseHistory {
         this.datePurchased = datePurchased;
     }
 
-    public void setItemsPurchased(List<Item> itemsPurchased) {
+    public void setItemsPurchased(ArrayList<Item> itemsPurchased) {
         this.itemsPurchased = itemsPurchased;
     }
 
